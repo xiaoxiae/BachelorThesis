@@ -1,16 +1,34 @@
 
 \chapwithtoc{Introduction}
 
-Introduction should answer the following questions, ideally in this order:
-\begin{enumerate}
-\item What is the nature of the problem the thesis is addressing?
-\item What is the common approach for solving that problem now?
-\item How this thesis approaches the problem?
-\item What are the results? Did something improve?
-\item What can the reader expect in the individual chapters of the thesis?
-\end{enumerate}
+TODO ... an obvious attraction for any modern bouldering gym is being able to model and display the current way the holds are set up (the current „setting“). This offers a great number of improvements, namely:
 
-Expected length of the introduction is between 1--4 pages. Longer introductions may require sub-sectioning with appropriate headings --- use \texttt{\textbackslash{}section*} to avoid numbering (with section names like `Motivation' and `Related work'), but try to avoid lengthy discussion of anything specific. Any ``real science'' (definitions, theorems, methods, data) should go into other chapters.
-\todo{You may notice that this paragraph briefly shows different ``types'' of `quotes' in TeX, and the usage difference between a hyphen (-), en-dash (--) and em-dash (---).}
+\begin{itemize}
+\item being able to view the current setting online, before visiting the gym
+\item archiving older settings for possible inspiration
+\item setting community-made boulders (if a suitable editor exists)
+\item filtering boulders by difficulty to find the best ones to try
+\item adding a social aspect -- (dis)liking and commenting on boulders, discovering who set the boulder and buying them a coffee as a thanks, adding send videos, etc.
+\end{itemize}
 
-It is very advisable to skim through a book about scientific English writing before starting the thesis. I can recommend `\citetitle{glasman2010science}' by \citet{glasman2010science}.
+Models of boulders are slowly becoming used in competitive bouldering and certain gyms (mostly in Japan), lead mainly by the OnlineObservation team \cite{onlineobservation}. Their approach is simple -- take photos of the wall with the holds already on it and use them to generate a 3D model. This works really well for a one-time model generation, but becomes infeasible for a bouldering gym that replaces boulders periodically, as the model would have to be regenerated each time. It is also impossible to individually highlight certain boulders or filter them out.
+
+This thesis attempts to solve this problem by only focusing on what actually changes from setting to setting -- the position of the holds on the wall. The repeated scanning of the holds and the wall adds redundancy, which could be removed by a program to edit the placements of the holds. This initially adds time, since high quality models of the wall and the holds have to be created. However, it saves it in the long term (namely each time the boulders are replaced), making it a viable option for comercial bouldering gyms.
+
+TODO: results
+
+TODO: chapters
+
+%Introduction should answer the following questions, ideally in this order:
+%\begin{enumerate}
+%\item What is the nature of the problem the thesis is addressing?
+%\item What is the common approach for solving that problem now?
+%\item How this thesis approaches the problem?
+%\item What are the results? Did something improve?
+%\item What can the reader expect in the individual chapters of the thesis?
+%\end{enumerate}
+%
+%Expected length of the introduction is between 1--4 pages. Longer introductions may require sub-sectioning with appropriate headings --- use \texttt{\textbackslash{}section*} to avoid numbering (with section names like `Motivation' and `Related work'), but try to avoid lengthy discussion of anything specific. Any ``real science'' (definitions, theorems, methods, data) should go into other chapters.
+%\todo{You may notice that this paragraph briefly shows different ``types'' of `quotes' in TeX, and the usage difference between a hyphen (-), en-dash (--) and em-dash (---).}
+%
+%It is very advisable to skim through a book about scientific English writing before starting the thesis. I can recommend `\citetitle{glasman2010science}' by \citet{glasman2010science}.
