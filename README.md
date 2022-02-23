@@ -11,8 +11,8 @@ The up-to-date version of the thesis is available as an artifact in the `Actions
 
 ## License
 
-Parts of the code (esp. the title page) are based on the original template (available from the faculty website) by Martin Mareš, Arnošt Komárek, and Michal Kulich. (Thanks!)
+Parts of the code (esp. the title page) are based on the original template (available from the faculty website) by Martin Mareš, Arnošt Komárek, and Michal Kulich.
 
 University and faculty logos are a property of the respective universities and faculties.
 
-Everything else in this repository is released into the public domain under GPLv3.
+Everything else in this repository is licensed under GPLv3.
