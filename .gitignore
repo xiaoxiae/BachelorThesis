@@ -1,3 +1,7 @@
+# Private
+papers/
+
+# LaTeX-related
 *.aux
 *.bbl
 *.bcf
