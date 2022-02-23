@@ -54,26 +54,31 @@
 \chapter{Theory}
 
 \section{Approaches to model construction}
-- LIDAR vs Photogrametrie
+% - LIDAR vs Photogrametrie
 
 \section{Photogrammetry}
 
-Feature matching across the photos.
-At the first stage PhotoScan detects points in the source photos which are stable under viewpoint and lighting variations and generates a descriptor for each point based on its local neighborhood. These descriptors are used later to detect correspondences across the photos. This is similar to the well known SIFT approach, but uses different algorithms for a little bit higher alignment quality.
-- TODO: přečíst stažený papír
+% Feature matching across the photos.
+% At the first stage PhotoScan detects points in the source photos which are stable under viewpoint and lighting variations and generates a descriptor for each point based on its local neighborhood. These descriptors are used later to detect correspondences across the photos. This is similar to the well known SIFT approach, but uses different algorithms for a little bit higher alignment quality.
+% - TODO: přečíst stažený papír
+% 
+% Solving for camera intrinsic and extrinsic orientation parameters.
+% PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
+% - https://en.wikipedia.org/wiki/Bundle_adjustment
+% - TODO: přečíst stažený papír
+% 
+% Dense surface reconstruction.
+% At this step several processing algorithms are available. Exact, Smooth and Height-field methods are based on pair-wise depth map computation, while Fast method utilizes a multi-view approach.
+% - TODO: ?
+% 
+% Texture mapping.
+% At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
+% - TODO: ?
+%
+% Locating markers
+% At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
+% - TODO: ?
 
-Solving for camera intrinsic and extrinsic orientation parameters.
-PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
-- https://en.wikipedia.org/wiki/Bundle_adjustment
-- TODO: přečíst stažený papír
 
-Dense surface reconstruction.
-At this step several processing algorithms are available. Exact, Smooth and Height-field methods are based on pair-wise depth map computation, while Fast method utilizes a multi-view approach.
-- TODO: ?
-
-Texture mapping.
-At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
-- TODO: ?
-
-\section{Background removal}
-- odstraňovaní pozadí - různé techniky
+\section{Picture pre-processing}
+% - odstraňovaní pozadí - různé techniky
