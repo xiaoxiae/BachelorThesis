@@ -30,3 +30,4 @@ thesis.run.xml
 *.toc
 *.vrb
 build/
+svg-inkscape/
