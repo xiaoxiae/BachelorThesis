@@ -1,6 +1,6 @@
 NAME=thesis
 ABSTRACT=abstract
-LATEXMKOPTS=-pdf #enable for forcing pdflatex
+LATEXMKOPTS=-pdf -outdir=build/
 LATEXMK=latexmk $(LATEXMKOPTS)
 
 PDFS=$(NAME).pdf $(ABSTRACT)-en.pdf $(ABSTRACT)-cz.pdf
