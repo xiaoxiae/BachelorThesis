@@ -53,32 +53,97 @@
 
 \chapter{Theory}
 
-\section{Approaches to model construction}
 % - LIDAR vs Photogrametrie
 
 \section{Photogrammetry}
+Since the Metashape software used by this paper to generate the models is closed-source, there is no easy way to describe the exact algorithms used. However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost} outlined the general methods used, which this section aims to cover.
 
+A common approach to generating models using photogrammetry can be summarized as follows:
+
+TODO: markers?
+\begin{enumerate}
+	\item \textbf{feature extraction:} find features (points) that are stable under image transformations, 3D viewpoint change and illumination
+	\item \textbf{feature matching:} match features across multiple pictures
+	\item \textbf{bundle adjustment:} given the matched features, find the approximate camera locations in space
+	\item \textbf{surface reconstruction:} construct the surface of the model
+	\item \textbf{texturing:} apply texture on the constructed model
+\end{enumerate}
+
+The following sections will explore each of these in part.
+
+\subsection{Feature extraction}
+The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object}. Each of the features is a vector, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
+
+
+
+\subsection{Feature matching}
 % Feature matching across the photos.
 % At the first stage PhotoScan detects points in the source photos which are stable under viewpoint and lighting variations and generates a descriptor for each point based on its local neighborhood. These descriptors are used later to detect correspondences across the photos. This is similar to the well known SIFT approach, but uses different algorithms for a little bit higher alignment quality.
 % - TODO: přečíst stažený papír
-% 
+
+% from bundler:
+% Create a list of images using the script 'extract_focal.pl' (this extracts focal length information, when available, from each image, and stores it in an image list).
+% Generate (SIFT) features for each image.
+% Match features between each pairs of images (this step can take a while). The computed feature matches are stored in a file called 'matches.init.txt'.
+% Run 'bundler' with a suitable options file.
+
+\subsection{Bundle adjustment}
 % Solving for camera intrinsic and extrinsic orientation parameters.
 % PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
 % - https://en.wikipedia.org/wiki/Bundle_adjustment
 % - TODO: přečíst stažený papír
-% 
+
+\subsection{Surface reconstruction}
 % Dense surface reconstruction.
 % At this step several processing algorithms are available. Exact, Smooth and Height-field methods are based on pair-wise depth map computation, while Fast method utilizes a multi-view approach.
 % - TODO: ?
-% 
+
+\subsection{Texturing}
 % Texture mapping.
 % At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
 % - TODO: ?
 %
-% Locating markers
-% At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
-% - TODO: ?
 
+\subsection{Scaling and transformations using markers}
+In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and transformed, such that it corresponds to its size in the real world.
+
+A common approach is using circular targets, which are placed around the scanned object.
+Since the distance between them is known, it can be used to infer the correct scale of the entire model.
+
+The type of the circular targets used is based on \citet{schneider19913,borisPatent} and is the only format supported by Metashape.
+Each of the targets can encode a variable number of bits, depending on its size, from $12$ to $18$.
+The bits are encoded in binary, with $0$ corresponding to white segments and $1$ to black ones.
+For robustness, the following constraints are additionally imposed on each of the targets:
+
+\begin{itemize}
+\item the first bit is a parity bit ($0$ for odd, $1$ for even)
+\item there must exist an opposing pair of $1$ bits
+\item the targets must be rotationally invariant
+\end{itemize}
+
+\begin{figure}
+\centering
+	\includesvg[width=0.7\columnwidth]{images/targets.svg}
+	\caption{18th 14-bit marker (left) and the corresponding binary value (right). The grey segments denote the opposing pair of $1$ bits and the blue circle denotes the parity bit. }
+\end{figure}
+
+\begin{table}
+\centering\footnotesize\sf
+\begin{tabular}{rrr}
+\toprule
+Bits & All targets & Valid targets \\
+\midrule
+12 & 4096   & 147 \\
+14 & 16384  & 516 \\
+16 & 65536  & 1861 \\
+18 & 262144 & 6766 \\
+\bottomrule
+\end{tabular}
+\caption{The number of targets, depending on the desired number of bits. TODO: cite the guy who wrote the algorithm}
+\label{tab:markers}
+\end{table}
+
+This does reduce the number of viable targets (see \cref{tab:markers}) but is still more than enough for the purposes of scanning small objects.
 
 \section{Picture pre-processing}
 % - odstraňovaní pozadí - různé techniky
