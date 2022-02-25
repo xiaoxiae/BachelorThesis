@@ -56,14 +56,17 @@
 % - LIDAR vs Photogrametrie
 
 \section{Photogrammetry}
-Since the Metashape software used by this paper to generate the models is closed-source, there is no easy way to describe the exact algorithms used. However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost} outlined the general methods used, which this section aims to cover.
+Since the Metashape software used by this paper to generate the models is closed-source, there is no easy way to describe the exact algorithms used.
+However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost} outlined the general methods used, which this section aims to cover.
 
-A common approach to generating models using photogrammetry can be summarized as follows:
+The approach to generating models can be summarized as follows:
 
-TODO: markers?
 \begin{enumerate}
 	\item \textbf{feature extraction:} find features (points) that are stable under image transformations, 3D viewpoint change and illumination
 	\item \textbf{feature matching:} match features across multiple pictures
+	\begin{itemize}
+		\item optionally use \textbf{markers} to appropriately scale the model
+	\end{itemize}
 	\item \textbf{bundle adjustment:} given the matched features, find the approximate camera locations in space
 	\item \textbf{surface reconstruction:} construct the surface of the model
 	\item \textbf{texturing:} apply texture on the constructed model
@@ -72,8 +75,31 @@ TODO: markers?
 The following sections will explore each of these in part.
 
 \subsection{Feature extraction}
-The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object}. Each of the features is a vector, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
+The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive,}.
+Each of the features is a vector, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
+To find such vectors, a Gaussian scale-space is used.
 
+Formally, a scale-space for a given 2D image $I(x, y)$ is defined as a function
+$$L(x, y, \sigma) = G(x, y, \sigma) \times I(x, y)$$
+
+The $\times$ symbol is a convolution of the two functions in $x$ and $y$, and $G$ is the Gaussian function
+$$G(x, y, \sigma) = \frac{1}{2\pi \sigma^2} e^{-(x^2 + y^2) / 2\sigma^2}$$
+
+This operation is then applied twice on image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$.
+After this, the image $I_{2,1}$ is downscaled by a certain factor (the original method uses $1.5$ with bilinear interpolation) and the process is repeated, yielding $I_{1,2}, I_{2,2}$ and $G_2$, respectively.
+
+To find the features, the local minima and maxima (compared to the 8 neighbouring pixels) of $G_1$ are examined -- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are chosen as the key points.
+To calculate the vectors for each of these key points, the magnitude $M(x,y)$ and orientation $R(x,y)$ is calculated using their neighbouring points via the following formula:
+$$
+\begin{aligned}
+	M(x,y) &= \sqrt{\left(I_{1,1}(x, y) - I_{1,1}(x + 1, y)\right)^2 + \left(I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)^2} \\[0.7em]
+	R(x,y) &= \mathrm{atan2} \left(I_{1,1}(x, y) - I_{1,1}(x + 1, y), I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)
+\end{aligned}
+$$
+
+The intuitive idea behind this approach is to suppress the finer details of the image, since each of the features in the coarse version of the image should be present in more detail in the original \cite{scalespace}.
+
+TODO: illustration on some images
 
 
 \subsection{Feature matching}
@@ -104,28 +130,32 @@ The image features are extracted using the Scale Invariant Feature Transform (SI
 % - TODO: ?
 %
 
-\subsection{Scaling and transformations using markers}
-In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and transformed, such that it corresponds to its size in the real world.
+\subsection{Scaling using markers}
+In certain cases (such as this one), it is necessary for the generated model to be correctly scaled such that it corresponds to its size in the real world.
 
-A common approach is using circular targets, which are placed around the scanned object.
+A common approach uses targets, which are easily recognized and placed around the scanned object.
 Since the distance between them is known, it can be used to infer the correct scale of the entire model.
-
-The type of the circular targets used is based on \citet{schneider19913,borisPatent} and is the only format supported by Metashape.
-Each of the targets can encode a variable number of bits, depending on its size, from $12$ to $18$.
-The bits are encoded in binary, with $0$ corresponding to white segments and $1$ to black ones.
-For robustness, the following constraints are additionally imposed on each of the targets:
-
-\begin{itemize}
-\item the first bit is a parity bit ($0$ for odd, $1$ for even)
-\item there must exist an opposing pair of $1$ bits
-\item the targets must be rotationally invariant
-\end{itemize}
 
 \begin{figure}
 \centering
 	\includesvg[width=0.7\columnwidth]{images/targets.svg}
 	\caption{18th 14-bit marker (left) and the corresponding binary value (right). The grey segments denote the opposing pair of $1$ bits and the blue circle denotes the parity bit. }
 \end{figure}
+
+The type of the circular targets used in Metashape is based on \citet{schneider19913,borisPatent}.
+Each target contains an inner and outer circle, with the inner being mainly for the purpose of locating the marker and the outer for encoding the marker data.
+
+The exact number of stored bits depends on the size of the marker, most common beind $12$ and $14$ respectively.
+The $0$ bits correspond to white segments and $1$ to black ones.
+For robustness, the following constraints are additionally imposed on each of the targets:
+
+\begin{itemize}
+	\item the targets must be rotationally invariant
+	\item the first bit is a parity bit ($0$ for odd, $1$ for even)
+	\item there must exist an opposing pair of $1$ bits
+\end{itemize}
+
+While this does reduce the number of viable targets (see \cref{tab:markers}), it is still more than enough for the purposes of scanning small objects.
 
 \begin{table}
 \centering\footnotesize\sf
@@ -142,8 +172,3 @@ Bits & All targets & Valid targets \\
 \caption{The number of targets, depending on the desired number of bits. TODO: cite the guy who wrote the algorithm}
 \label{tab:markers}
 \end{table}
-
-This does reduce the number of viable targets (see \cref{tab:markers}) but is still more than enough for the purposes of scanning small objects.
-
-\section{Picture pre-processing}
-% - odstraňovaní pozadí - různé techniky
