@@ -31,3 +31,6 @@ thesis.run.xml
 *.vrb
 build/
 svg-inkscape/
+
+# other
+__pycache__/
