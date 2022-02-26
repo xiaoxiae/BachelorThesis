@@ -62,12 +62,8 @@ However, a forum statement from the lead developer Dmitry Semyonov \parencite{me
 The approach to generating models can be summarized as follows:
 
 \begin{enumerate}
-	\item \textbf{feature extraction:} find features (points) that are stable under image transformations, 3D viewpoint change and illumination
-	\item \textbf{feature matching:} match features across multiple pictures
-	\begin{itemize}
-		\item optionally use \textbf{markers} to appropriately scale the model
-	\end{itemize}
-	\item \textbf{bundle adjustment:} given the matched features, find the approximate camera locations in space
+	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, 3D viewpoint change and illumination
+	\item \textbf{bundle adjustment:} find the approximate camera locations in space and the position of some of the features in space
 	\item \textbf{surface reconstruction:} construct the surface of the model
 	\item \textbf{texturing:} apply texture on the constructed model
 \end{enumerate}
@@ -101,26 +97,15 @@ The intuitive idea behind this approach is to suppress the finer details of the 
 
 TODO: illustration on some images
 
-
-\subsection{Feature matching}
-% Feature matching across the photos.
-% At the first stage PhotoScan detects points in the source photos which are stable under viewpoint and lighting variations and generates a descriptor for each point based on its local neighborhood. These descriptors are used later to detect correspondences across the photos. This is similar to the well known SIFT approach, but uses different algorithms for a little bit higher alignment quality.
-% - TODO: přečíst stažený papír
-
-% from bundler:
-% Create a list of images using the script 'extract_focal.pl' (this extracts focal length information, when available, from each image, and stores it in an image list).
-% Generate (SIFT) features for each image.
-% Match features between each pairs of images (this step can take a while). The computed feature matches are stored in a file called 'matches.init.txt'.
-% Run 'bundler' with a suitable options file.
-
 \subsection{Bundle adjustment}
 % Solving for camera intrinsic and extrinsic orientation parameters.
 % PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
 % - https://en.wikipedia.org/wiki/Bundle_adjustment
 % - TODO: přečíst stažený papír
+% - TODO: že tohle vygeneruje sparse point cloud
 
 \subsection{Surface reconstruction}
-% Dense surface reconstruction.
+% Describe depth map computation
 % At this step several processing algorithms are available. Exact, Smooth and Height-field methods are based on pair-wise depth map computation, while Fast method utilizes a multi-view approach.
 % - TODO: ?
 
