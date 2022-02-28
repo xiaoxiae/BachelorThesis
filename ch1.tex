@@ -98,6 +98,13 @@ The intuitive idea behind this approach is to suppress the finer details of the 
 TODO: illustration on some images
 
 \subsection{Bundle adjustment}
+After the features have been determined, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
+This is referred to as the bundle adjustment problem \cite{schneider19913}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
+
+More formally, we can imagine the scene being modeled by a vector of $n$ 3D points $\mathbf{X}_i$, taken from $m$ cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_j$.
+We have measurements $\underline{\mathbf{x}}_{ij}$ for some of the true features $\mathbf{x}_{ij}$ that are the projections of the $i$-th point on the $j$-th camera.
+
+We then have some model $x()$
 % Solving for camera intrinsic and extrinsic orientation parameters.
 % PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
 % - https://en.wikipedia.org/wiki/Bundle_adjustment
