@@ -67,6 +67,7 @@ The approach to generating models can be summarized as follows:
 	\item \textbf{bundle adjustment:} find the approximate camera locations in space and the position of some of the features in space
 	\item \textbf{surface reconstruction:} construct the surface of the model
 	\item \textbf{texturing:} apply texture on the constructed model
+	\item (optional) \textbf{transformation using markers:} use markers to correctly scale and position the object in the 3D space TODO: this should be done earlier?
 \end{enumerate}
 
 The following sections will explore each of these in part.
@@ -128,24 +129,24 @@ We then have some model $x()$
 % - TODO: ?
 %
 
-\subsection{Scaling using markers}
-In certain cases (such as this one), it is necessary for the generated model to be correctly scaled such that it corresponds to its size in the real world.
+\subsection{Transformation using markers}
+In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and positioned (in either local or other coordinates) such that it corresponds to its size in the real world.
 
-A common approach uses targets, which are easily recognized and placed around the scanned object.
-Since the distance between them is known, it can be used to infer the correct scale of the entire model.
+A common approach uses markers, which are easily recognized and placed around the scanned object.
+Since either their pairwise distance or their position is known, it can be used to infer the correct scale of the entire model.
 
 \begin{figure}
 \centering
 	\includesvg[width=0.7\columnwidth]{images/targets.svg}
-	\caption{18th 14-bit marker (left) and the corresponding binary value (right). The grey segments denote the opposing pair of $1$ bits and the blue circle denotes the parity bit. }
+	\caption{18th 14-bit marker (left) and the corresponding binary value (right). The grey segments denote the opposing pair of $1$ bits and the blue circle denotes the parity bit.}
 \end{figure}
 
-The type of the circular targets used in Metashape is based on \citet{schneider19913,borisPatent}.
-Each target contains an inner and outer circle, with the inner being mainly for the purpose of locating the marker and the outer for encoding the marker data.
+The type of the markers used in Metashape is based on \citet{schneider19913,borisPatent}.
+Each circular target contains an inner and outer circle, with the inner serving the purpose of locating the marker in the images and the outer for encoding the marker data.
 
 The exact number of stored bits depends on the size of the marker, most common beind $12$ and $14$ respectively.
 The $0$ bits correspond to white segments and $1$ to black ones.
-For robustness, the following constraints are additionally imposed on each of the targets:
+For correctness of decoding the marker data and robustness, the following constraints are additionally imposed on each of the targets:
 
 \begin{itemize}
 	\item the targets must be rotationally invariant
@@ -153,7 +154,7 @@ For robustness, the following constraints are additionally imposed on each of th
 	\item there must exist an opposing pair of $1$ bits
 \end{itemize}
 
-While this does reduce the number of viable targets (see \cref{tab:markers}), it is still more than enough for the purposes of scanning small objects.
+While this does reduce the number of viable targets (see \cref{tab:markers}), it is still more than enough for the purposes of scanning smaller objects (and thus for the porposes this paper).
 
 \begin{table}
 \centering\footnotesize\sf
@@ -167,6 +168,6 @@ Bits & All targets & Valid targets \\
 18 & 262144 & 6766 \\
 \bottomrule
 \end{tabular}
-\caption{The number of targets, depending on the desired number of bits. TODO: cite the guy who wrote the algorithm}
+\caption{The number of targets, depending on the desired number of bits \cite{targetsPost}.}
 \label{tab:markers}
 \end{table}
