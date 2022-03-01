@@ -1,6 +1,6 @@
 # Thesis
-
 TODO: abstract
+TODO: links to github
 
 ## Downloading
 The up-to-date version of the thesis is available as an artifact in the `Actions` section.
@@ -10,7 +10,6 @@ The up-to-date version of the thesis is available as an artifact in the `Actions
 2. There is no step two.
 
 ## License
-
 Parts of the code (esp. the title page) are based on the original template (available from the faculty website) by Martin Mareš, Arnošt Komárek, and Michal Kulich.
 
 University and faculty logos are a property of the respective universities and faculties.

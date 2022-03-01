@@ -63,6 +63,7 @@ The approach to generating models can be summarized as follows:
 
 \begin{enumerate}
 	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, 3D viewpoint change and illumination
+	\item \textbf{feature matching:} match the features across multiple images
 	\item \textbf{bundle adjustment:} find the approximate camera locations in space and the position of some of the features in space
 	\item \textbf{surface reconstruction:} construct the surface of the model
 	\item \textbf{texturing:} apply texture on the constructed model
@@ -71,7 +72,7 @@ The approach to generating models can be summarized as follows:
 The following sections will explore each of these in part.
 
 \subsection{Feature extraction}
-The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive,}.
+The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive,snavely2008modeling}.
 Each of the features is a vector, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
 To find such vectors, a Gaussian scale-space is used.
 
@@ -97,11 +98,13 @@ The intuitive idea behind this approach is to suppress the finer details of the 
 
 TODO: illustration on some images
 
-\subsection{Bundle adjustment}
-After the features have been determined, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
-This is referred to as the bundle adjustment problem \cite{schneider19913}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
+\subsection{Feature matching}
 
-More formally, we can imagine the scene being modeled by a vector of $n$ 3D points $\mathbf{X}_i$, taken from $m$ cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_j$.
+\subsection{Bundle adjustment}
+After the features have been determined and matched across the images, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
+This is referred to as the bundle adjustment problem \cite{schneider19913,snavely2008modeling}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
+
+Formally, we can model the scene by a vector of $n$ 3D points $\mathbf{X}_i$, taken from $m$ cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_j$.
 We have measurements $\underline{\mathbf{x}}_{ij}$ for some of the true features $\mathbf{x}_{ij}$ that are the projections of the $i$-th point on the $j$-th camera.
 
 We then have some model $x()$
