@@ -86,6 +86,9 @@ This operation is then applied twice on image $I$ with $\sigma = \sqrt{2}$, yiel
 After this, the image $I_{2,1}$ is downscaled by a certain factor (the original method uses $1.5$ with bilinear interpolation) and the process is repeated, yielding $I_{1,2}, I_{2,2}$ and $G_2$, respectively.
 
 To find the features, the local minima and maxima (compared to the 8 neighbouring pixels) of $G_1$ are examined -- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are chosen as the key points.
+
+The intuitive idea behind this approach is to suppress the finer details of the image, since each of the features in the coarse version of the image should be present in more detail in the original \cite{scalespace}.
+
 To calculate the vectors for each of these key points, the magnitude $M(x,y)$ and orientation $R(x,y)$ is calculated using their neighbouring points via the following formula:
 $$
 \begin{aligned}
@@ -94,7 +97,7 @@ $$
 \end{aligned}
 $$
 
-The intuitive idea behind this approach is to suppress the finer details of the image, since each of the features in the coarse version of the image should be present in more detail in the original \cite{scalespace}.
+For the vectors to be invariant to orientation and contrast changes, a canonical orientation is calculated from their local image gradients (again using the Gaussian function with some parameter $\sigma$).
 
 TODO: illustration on some images
 
