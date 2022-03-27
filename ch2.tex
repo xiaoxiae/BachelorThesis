@@ -104,24 +104,36 @@ The realization of the project can be separated into two distinct parts: the pro
 \end{itemize}
 
 \section{Creating hold models}
-Since a regular climbing wall contains hundreds, or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
-It is important to automize as many steps as possible so that the amount of manual work done is minimized, ideally limited to swapping one hold for another when the scanning is done.
+Since a regular climbing wall contains hundreds or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
+It is important to automize as many steps as possible so that the amount of manual work done is minimized.
 
-This has been acomplished using a turntable-based workflow, upon which the hold is placed and scanned.
-The turntable turns the hold around for the stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry program (+ some minor Blender post-processing) to generate the model.
+This has been acomplished using a turntable-based workflow, upon which the holds are placed and scanned.
+The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry program (+ Blender for post-processing) to generate the model.
+
+% TODO: the exact numbers
+The resulting workflow can process a single hold in $~1$ minute of scanning (depending on the number of photos taken) + $5$ minutes of processing
 
 \subsection{Turntable design}
 A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer.
 An Arduino board and A4988 motor controllers are used for fine motor control.
 The communication with the Arduino is implemented via USB using the serial port.
 
-TODO: arduino schematic https://fritzing.org/
+% TODO: arduino schematic https://fritzing.org/
 
-To minimize the amount of friction, the only points of contact between the top and bottom part are 7 608 bearings (6 placed in a circular pattern and 1 directly in the middle).
-Aditionally, gears with a TODO reduction are used to turn the top and bottom part.
-This allows the turntable to handle objects with weight up to TODO (heavier objects have to be turned manually).
+To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 directly in the middle).
+Additionally, gears mounted to the motors turn the top of the turntable, achieving a TODO reduction.
+This allows the turntable to handle objects of weight up to TODO (heavier objects have to be turned manually).
 
 TODO: images of the turntable from various angles
+
+The top area is connected to a TODO: 50x50 in SI plexiglass with a marked center and TODO markers.
+
+\subsection{Environment setup}
+TODO: lightning
+TODO: black background for turning not being recognized as such
+
+
+
 
 \section{Editor implementation}
 
