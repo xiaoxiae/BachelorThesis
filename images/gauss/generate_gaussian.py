@@ -44,8 +44,6 @@ def pyramid(im, sigma1, sigma2, iteration):
 im = ImageOps.grayscale(Image.open('input.jpg'))
 im = im.resize((im.width // 2, im.height // 2))
 
-im = pyramid(im, sqrt(2), 2, 1)
-im = im.resize((int(im.width / 1.5), int(im.height / 1.5)), Image.BILINEAR)
-
-pyramid(im, sqrt(2), 2, 2)
-
+for i in range(4):
+    im = pyramid(im, sqrt(2), 2, i + 1)
+    im = im.resize((int(im.width / 1.5), int(im.height / 1.5)), Image.BILINEAR)

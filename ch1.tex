@@ -72,7 +72,7 @@ The approach to generating models can be broadly split into a few parts, each of
 	\item \textbf{texturing:} apply texture on the constructed model
 \end{enumerate}
 
-The following sections will explore each of these in part.
+The following sections aim to cover each of these in part.
 
 \subsection{Feature extraction}
 The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive,snavely2008modeling}.
@@ -88,6 +88,12 @@ $$G(x, y, \sigma) = \frac{1}{2\pi \sigma^2} e^{-(x^2 + y^2) / 2\sigma^2}$$
 This operation is then applied twice on image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$.
 After this, the image $I_{2,1}$ is downscaled by a certain factor (the original method uses $1.5$ with bilinear interpolation) and the process is repeated, yielding $I_{1,2}, I_{2,2}$ and $G_2$, respectively.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{images/gauss.png}
+	\caption{An example of the convolution and difference applied to a hold image.}
+\end{figure}
+
 To find the features, the local minima and maxima (compared to the 8 neighbouring pixels) of $G_1$ are examined -- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are chosen as the key points.
 
 The intuitive idea behind this approach is to suppress the finer details of the image, since each of the features in the coarse version of the image should be present in more detail in the original \cite{scalespace}.
@@ -102,20 +108,22 @@ $$
 
 For the vectors to be invariant to orientation and contrast changes, a canonical orientation is calculated from their local image gradients (again using the Gaussian function with some parameter $\sigma$).
 
-TODO: illustration on some images
-
 \subsection{Feature matching}
 
 % TODO?
 
 \subsection{Bundle adjustment}
 After the features have been determined and matched across the images, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
-This is referred to as the bundle adjustment problem \cite{schneider19913,snavely2008modeling}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
+This is referred to as the bundle adjustment problem \cite{snavely2008modeling,schneider19913}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
 
-Formally, we can model the scene by a vector of $n$ 3D points $\mathbf{X}_i$, taken from $m$ cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_j$.
-We have measurements $\underline{\mathbf{x}}_{ij}$ for some of the true features $\mathbf{x}_{ij}$ that are the projections of the $i$-th point on the $j$-th camera.
+Formally, we can model the scene by a vector of 3D points $\mathbf{X}_{i \in [n]}$, taken from cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_{j \in [m]}$.
+Our matched features are observations $\underline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
 
-We then have some model $x()$
+Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that takes the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, and returns the observation position $\mathbf{x}_{i, j}$.
+Using this, the bundle adjustment problem can be formulated as a \textbf{minimization problem} of the function $$\Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) = \underline{\bm{x}}_{ij} - \bm{x}(\mathbf{X}_i, \mathbf{P}_j)$$
+given the observed features and an appropriate cost function.
+
+
 % Solving for camera intrinsic and extrinsic orientation parameters.
 % PhotoScan uses a greedy algorithm to find approximate camera locations and refines them later using a bundle-adjustment algorithm. This should have many things in common with Bundler, although we didn't compare our algorithm with Bundler thoroughly.
 % - https://en.wikipedia.org/wiki/Bundle_adjustment
@@ -132,24 +140,14 @@ We then have some model $x()$
 % At this stage PhotoScan parametrizes a surface possibly cutting it in smaller pieces, and then blends source photos to form a texture atlas.
 % - TODO: ?
 
-\section{NeRF-based photogrammetry}
-Neural Radiance Fields (or NeRF for short) are a new approach to reconstructing scenes from a set of images \cite{mildenhall2020nerf}.
-It differs drastically from the feature-based approach, namely that it doesn't construct a mesh of the scene, but rather a continuous 5D function that is the representation of the scene.
-Given a point $(x, y, z)$ and the viewing direction $(\theta, \phi)$, it returns the RGB color and the volume density $\sigma$.
-Since this function is differentiable, gradient descent is used to minimize the difference between the real images and model predictions.
-
-The mesh is constructed only after the function has been constructed, using the marching cubes algorithm.
-
-% TODO: more
-
 \section{Using markers}
-In certain cases, it is necessary for the generated model to be correctly scaled and positioned (in either local or other coordinates) such that it corresponds to its size in the real world.
+In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and positioned (in either local or world coordinates) such that it corresponds to its size in the real world.
 
-A common approach is to use easily recognizable markers placed around the scanned object.
+A simple approach for local coordinates is to use easily recognizable markers placed around the scanned object.
 Since their position in space is known (measured in advance), it can be used to infer the correct scale of the entire model.
 
 \begin{figure}
-\centering
+	\centering
 	\includesvg[width=0.7\columnwidth]{images/targets.svg}
 	\caption{18th 14-bit marker (left) and the corresponding binary value (right). The grey segments denote the opposing pair of $1$ bits and the blue circle denotes the parity bit.}
 \end{figure}
@@ -159,7 +157,7 @@ Each circular target contains an inner and outer circle, with the inner serving 
 
 The exact number of stored bits depends on the size of the marker, most common beind $12$ and $14$ respectively.
 The $0$ bits correspond to white segments and $1$ to black ones.
-For correctness of decoding the marker data and robustness, the following constraints are additionally imposed on each of the targets:
+For decoding correctness and robustness, the following constraints are additionally imposed on each of the targets:
 
 \begin{itemize}
 	\item the targets must be rotationally invariant

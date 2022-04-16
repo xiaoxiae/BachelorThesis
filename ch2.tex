@@ -97,39 +97,82 @@
 
 \chapter{Realization}
 
-The realization of the project can be separated into two distinct parts: the process of \textbf{creating hold models} and the \textbf{editor implementation}. Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
+The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models}, \textbf{editor implementation}. Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
 \begin{itemize}
-	\item \textbf{Clis} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
-	\item \textbf{Cled} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
+	\item \raisebox{-0.07em}{\includesvg[height=\baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
+	\item \raisebox{-0.07em}{\includesvg[height=\baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
 \end{itemize}
+
+\section{Creating wall model}
+The wall model \ref{fig:model} has been created semi-automatically.
+First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
+This model was then manually edited in Blender 3D to remove possible modelling errors.
+Since the wall consists only of straight segments connected together, this can be done relatively easily.
+After manual changes, the resulting model was reimported to Metashape to generate the texture from the photos.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{images/wall/image.png}
+	\caption{The model of the Smíchoff boulder wall, created using Metashape and Blender.}
+	\label{fig:model}
+\end{figure}
+
 
 \section{Creating hold models}
 Since a regular climbing wall contains hundreds or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
 It is important to automize as many steps as possible so that the amount of manual work done is minimized.
 
 This has been acomplished using a turntable-based workflow, upon which the holds are placed and scanned.
-The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry program (+ Blender for post-processing) to generate the model.
+The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing) to generate the model.
 
-% TODO: the exact numbers
-The resulting workflow can process a single hold in $~1$ minute of scanning (depending on the number of photos taken) + $5$ minutes of processing
+The resulting workflow can process a single hold in $\sim 40$ seconds of scanning (taking $12$ photos, varies depending on lighting conditions), plus  $\sim4$ minutes of processing.
 
 \subsection{Turntable design}
-A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer.
-An Arduino board and A4988 motor controllers are used for fine motor control.
+A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer \label{ref:turntable}.
+An Arduino board and A4988 motor controllers are used for fine motor control \ref{fig:wiring}.
 The communication with the Arduino is implemented via USB using the serial port.
 
-% TODO: arduino schematic https://fritzing.org/
+\begin{figure}
+	\centering
+	\includesvg[width=\columnwidth]{images/wiring.svg}
+	\caption{The wiring diagram of the turntable, created using Fritzing.}
+	\label{fig:wiring}
+\end{figure}
 
 To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 directly in the middle).
 Additionally, gears mounted to the motors turn the top of the turntable, achieving a TODO reduction.
 This allows the turntable to handle objects of weight up to TODO (heavier objects have to be turned manually).
 
-% TODO: images of the turntable from various angles
+\begin{figure}
+	\centering
+	\subfloat[\centering Top part.]{{\includegraphics[height=3.6cm]{images/turntable/top.png} }}%
+	\qquad
+	\subfloat[\centering Base part from the top.]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
+	\qquad
+	\subfloat[\centering Base part from the side.]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
+	\caption{Parts of the model of the turntable, created using Fusion360.}%
+	\label{fig:turntable}
+\end{figure}
 
-
-The top area is connected to a plexiglass with a marked center and TODO markers.
+The top area is connected to a plexiglass with a marked center and 4 markers.
 
 \subsection{Environment setup}
+Two LED lights, mounted on adjustable stands and covered with baking paper (for diffusion) were used to achieve good lighting conditions.
+Aditionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{images/setup/setup.png}
+	\caption{An image of the setup during scanning, including the taken image.}
+\end{figure}
+
+\subsection{Dual texture holds}
+
+TODO: sample images
+
+
+
+
 TODO: lightning
 TODO: black background for turning not being recognized as such
 
