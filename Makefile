@@ -1,6 +1,6 @@
 NAME=thesis
 ABSTRACT=abstract
-LATEXMKOPTS=-pdf -shell-escape
+LATEXMKOPTS=-pdf -shell-escape -output-directory=build/
 LATEXMK=latexmk $(LATEXMKOPTS)
 
 PDFS=$(NAME).pdf $(ABSTRACT)-en.pdf $(ABSTRACT)-cz.pdf
