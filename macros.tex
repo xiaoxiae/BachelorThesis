@@ -47,15 +47,6 @@
 % asymptotic complexity
 \newcommand{\asy}[1]{\mathcal{O}(#1)}
 
-% listings and default lstlisting config (remove if unused)
-\DeclareNewFloatType{listing}{}
-\floatsetup[listing]{style=ruled}
-
-\DeclareCaptionStyle{thesis}{style=base,font={small,sf},labelfont=bf,labelsep=quad}
-\captionsetup{style=thesis}
-\captionsetup[algorithm]{style=thesis,singlelinecheck=off}
-\captionsetup[listing]{style=thesis,singlelinecheck=off}
-
 % Uncomment for table captions on top. This is sometimes recommended by the
 % style guide, and even required for some publication types.
 %\floatsetup[table]{capposition=top}
@@ -74,18 +65,6 @@
 % additionally requires some extra markup in your {table} environments; see the
 % comments in the example table in `ch2.tex` for details.
 %\floatsetup[table]{capposition=top,framefit=yes}
-
-\ifEN\floatname{listing}{Listing}
-\else\floatname{listing}{Výpis kódu}\fi
-\lstset{ % use this to define styling for any other language
-  language=C++,
-  tabsize=2,
-  showstringspaces=false,
-  basicstyle=\footnotesize\tt\color{black!75},
-  identifierstyle=\bfseries\color{black},
-  commentstyle=\color{green!50!black},
-  stringstyle=\color{red!50!black},
-  keywordstyle=\color{blue!75!black}}
 
 % Czech versions of the used cleveref references (It's not as convenient as in
 % English because of declension, cleveref is limited to sg/pl nominative. Use

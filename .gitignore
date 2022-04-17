@@ -2,6 +2,7 @@
 papers/
 
 # LaTeX-related
+_minted-thesis/
 *.aux
 *.bbl
 *.bcf
