@@ -1,110 +1,14 @@
-%\chapter{More complicated chapter}
-%\label{chap:math}
-%
-%After the reader gained sufficient knowledge to understand your problem in \cref{chap:refs}, you can jump to your own advanced material and conclusions.
-%
-%You will need definitions (see \cref{defn:x} below in \cref{sec:demo}), theorems (\cref{thm:y}), general mathematics, algorithms (\cref{alg:w}), and tables (\cref{tab:z})\todo{See documentation of package \texttt{booktabs} for hints on typesetting tables. As a main rule, \emph{never} draw a vertical line.}. \Cref{fig:f,fig:g} show how to make a nice figure. See \cref{fig:schema} for an example of TikZ-based diagram. Cross-referencing helps a lot to keep the necessary parts of the narrative close --- use references to the previous chapter with theory wherever it seems that the reader could have forgotten the required context.
-%
-%\section{Example with some mathematics}
-%\label{sec:demo}
-%
-%\begin{defn}[Triplet]\label{defn:x}
-%Given stuff $X$, $Y$ and $Z$, we will write a \emph{triplet} of the stuff as $(X,Y,Z)$.
-%\end{defn}
-%
-%\newcommand{\Col}{\textsc{Colour}}
-%
-%\begin{thm}[Car coloring]\label{thm:y}
-%All cars have the same color. More specifically, for any set of cars $C$, we have
-%$$(\forall c_1, c_2 \in C)\:\Col(c_1) = \Col(c_2).$$
-%\end{thm}
-%
-%\begin{proof}
-%Use induction on sets of cars $C$. The statement holds trivially for $|C|\leq1$. For larger $C$, select 2 overlapping subsets of $C$ smaller than $|C|$ (thus same-colored). Overlapping cars need to have the same color as the cars outside the overlap, thus also the whole $C$ is same-colored.\todo{This is plain wrong though.}
-%\end{proof}
-%
-%\begin{table}
-%% uncomment the following line if you use the fitted top captions for tables
-%% (see the \floatsetup[table] comments in `macros.tex`.
-%%\floatbox{table}[\FBwidth]{
-%\centering\footnotesize\sf
-%\begin{tabular}{llrl}
-%\toprule
-%Column A & Column 2 & Numbers & More \\
-%\midrule
-%Asd & QWERTY & 123123 & -- \\
-%Asd qsd 1sd & \textcolor{red}{BAD} & 234234234 & This line should be helpful. \\
-%Asd & \textcolor{blue}{INTERESTING} & 123123123 & -- \\
-%Asd qsd 1sd & \textcolor{violet!50}{PLAIN WEIRD} & 234234234 & -- \\
-%Asd & QWERTY & 123123 & -- \\
-%\addlinespace % a nice non-intrusive separator of data groups (or final table sums)
-%Asd qsd 1sd & \textcolor{green!80!black}{GOOD} & 234234299 & -- \\
-%Asd & NUMBER & \textbf{123123} & -- \\
-%Asd qsd 1sd & DIFFERENT & 234234234 & (no data) \\
-%\bottomrule
-%\end{tabular}
-%%}{  % uncomment if you use the \floatbox (as above), erase otherwise
-%\caption{An example table.  Table caption should clearly explain how to interpret the data in the table. Use some visual guide, such as boldface or color coding, to highlight the most important results (e.g., comparison winners).}
-%%}  % uncomment if you use the \floatbox
-%\label{tab:z}
-%\end{table}
-%
-%\begin{figure}
-%\centering
-%\tikzstyle{box}=[rectangle,draw,rounded corners=0.5ex,fill=green!10]
-%\begin{tikzpicture}[thick,font=\sf\scriptsize]
-%\node[box,rotate=45] (a) {A test.};
-%\node[] (b) at (4,0) {Node with no border!};
-%\node[circle,draw,dashed,fill=yellow!20, text width=6em, align=center] (c) at (0,4) {Ugly yellow node.\\Is this the Sun?};
-%\node[box, right=1cm of c] (d) {Math: $X=\sqrt{\frac{y}{z}}$};
-%\draw[->](a) to (b);
-%\draw[->](a) to[bend left=30] node[midway,sloped,anchor=north] {flow flows} (c);
-%\draw[->>>,dotted](b) to[bend right=30] (d);
-%\draw[ultra thick](c) to (d);
-%
-%\end{tikzpicture}
-%\caption{An example diagram typeset with TikZ.}
-%\label{fig:schema}
-%\end{figure}
-%
-%\begin{algorithm}
-%\begin{algorithmic}
-%\Function{ExecuteWithHighProbability}{$A$}
-%	\State $r \gets$ a random number between $0$ and $1$
-%	\State $\varepsilon \gets 0.0000000000000000000000000000000000000042$
-%	\If{$r\geq\varepsilon$}
-%		\State execute $A$ \Comment{We discard the return value}
-%	\Else
-%		\State print: \texttt{Not today, sorry.}
-%	\EndIf
-%\EndFunction
-%\end{algorithmic}
-%\caption{Algorithm that executes an action with high probability. Do not care about formal semantics in the pseudocode --- semicolons, types, correct function call parameters and similar nonsense from `realistic' languages can be safely omitted. Instead make sure that the intuition behind (and perhaps some hints about its correctness or various corner cases) can be seen as easily as possible.}
-%\label{alg:w}
-%\end{algorithm}
-%
-%\section{Extra typesetting hints}
-%
-%Do not overuse text formatting for highlighting various important parts of your sentences. If an idea cannot be communicated without formatting, the sentence probably needs rewriting anyway. Imagine the thesis being read aloud as a podcast --- the storytellers are generally unable to speak in boldface font.
-%
-%Most importantly, do \underline{not} overuse bold text, which is designed to literally \textbf{shine from the page} to be the first thing that catches the eye of the reader. More precisely, use bold text only for `navigation' elements that need to be seen and located first, such as headings, list item leads, and figure numbers.
-%
-%Use underline only in dire necessity, such as in the previous paragraph where it was inevitable to ensure that the reader remembers to never typeset boldface text manually again.
-%
-%Use \emph{emphasis} to highlight the first occurrences of important terms that the reader should notice. The feeling the emphasis produces is, roughly, ``Oh my --- what a nicely slanted word! Surely I expect it be important for the rest of the thesis!''
-%
-%Finally, never draw a vertical line, not even in a table or around figures, ever. Vertical lines outside of the figures are ugly.
-
 \chapter{Realization}
 
-The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models}, \textbf{editor implementation}. Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
+The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models}, \textbf{editor implementation}.
+Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
 \begin{itemize}
-	\item \raisebox{-0.07em}{\includesvg[height=\baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
-	\item \raisebox{-0.07em}{\includesvg[height=\baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
+	\item \raisebox{-0.08em}{\includesvg[height=\baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
+	\item \raisebox{-0.08em}{\includesvg[height=\baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
 \end{itemize}
 
 \section{Creating wall model}
-The wall model \ref{fig:model} has been created semi-automatically.
+The wall model (figure \ref{fig:model}) has been created semi-automatically.
 First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
 This model was then manually edited in Blender 3D to remove possible modelling errors.
 Since the wall consists only of straight segments connected together, this can be done relatively easily.
@@ -113,7 +17,7 @@ After manual changes, the resulting model was reimported to Metashape to generat
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{images/wall/image.png}
-	\caption{The model of the Smíchoff boulder wall, created using Metashape and Blender.}
+	\caption{The model of the Smíchoff wall, created using Metashape and Blender.}
 	\label{fig:model}
 \end{figure}
 
@@ -129,7 +33,7 @@ The resulting workflow can process a single hold in $\sim 40$ seconds of scannin
 
 \subsection{Turntable design}
 A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer \label{ref:turntable}.
-An Arduino board and A4988 motor controllers are used for fine motor control \ref{fig:wiring}.
+An Arduino board and A4988 motor controllers are used for fine motor control (figure \ref{fig:wiring}).
 The communication with the Arduino is implemented via USB using the serial port.
 
 \begin{figure}
@@ -146,19 +50,26 @@ This allows the turntable to handle objects of weight up to TODO (heavier object
 \begin{figure}
 	\centering
 	\subfloat[\centering Top part.]{{\includegraphics[height=3.6cm]{images/turntable/top.png} }}%
-	\qquad
+	\hfill
 	\subfloat[\centering Base part from the top.]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
-	\qquad
+	\hfill
 	\subfloat[\centering Base part from the side.]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
 	\caption{Parts of the model of the turntable, created using Fusion360.}%
 	\label{fig:turntable}
 \end{figure}
 
+TODO: the motor mount models and the motor wheel model
+
 The top area is connected to a plexiglass with a marked center and 4 markers.
 
 \subsection{Environment setup}
-Two LED lights, mounted on adjustable stands and covered with baking paper (for diffusion) were used to achieve good lighting conditions.
-Aditionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
+Two LED lights, mounted on adjustable stands and covered with baking paper (for light diffusion) were used to achieve good lighting conditions.
+A large black cloth was used as a background around the turntable to minimize the number of unwanted image features.
+
+Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
+This meant that the exposure time was usually around $~1.5$ seconds.
+
+The entire setup was carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
 
 \begin{figure}
 	\centering
@@ -167,17 +78,37 @@ Aditionally, since the camera is static, 300 ISO and 22 f/s were used to maximiz
 \end{figure}
 
 \subsection{Dual texture holds}
+Glossy surfaces are one of the most problematic types surfaces for photogrammetry, since the angle under which they are imaged change their appearance due to light reflecting into the camera.
+This poses a problem for „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
+They are increasingly used in modern bouldering and sports climbing, because they give setters more freedom in creating difficult routes.
 
-TODO: sample images
+A standard way of dealing with glossy surfaces is to cover them in something that is mate.
+While this does solve the problem of model generation, it ruins the texture, because the mate solution is usually opaque (and possibly requiring another set of images for texturing).
 
+In our case, however, the solution is rather obvious -- cover them in climbing chalk (figure \ref{fig:chalk}).
+Since it is mate, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
+Additionally, since climbing chalk will be applied to the holds by climber during regular usage anyway, there is no need to obtain more images for texturing.
 
-
-
-TODO: lightning
-TODO: black background for turning not being recognized as such
-
-
-
+\begin{figure}
+	\centering
+	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
+	\hfill
+	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/2.png} }}%
+	\hfill
+	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
+	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
+	\label{fig:chalk}
+\end{figure}
 
 \section{Editor implementation}
+The editor has been implemented in Unity.
+
+
+\subsection{Modes}
+The k
+
+
+\subsection{Import and Export}
+
+\subsection{Capturing images}
 
