@@ -101,14 +101,34 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 \end{figure}
 
 \section{Editor implementation}
-The editor has been implemented in Unity.
+The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
+Besides the builtin libraries, a number of freely available user packages were used for simplifying the coding process, namely
 
+\begin{itemize}
+	\item \textbf{Quick Outline} \footnote{\url{https://assetstore.unity.com/packages/tools/particles-effects/quick-outline-115488}} -- object outline creator (for hold highlights).
+	\item \textbf{OBJImport} \footnote{\url{https://assetstore.unity.com/packages/tools/modeling/runtime-obj-importer-49547}} -- an \verb|.obj| file importer (including texture files).
+	\item \textbf{StandaloneFileBrowser} \footnote{\url{https://github.com/gkngkc/UnityStandaloneFileBrowser}} -- a cross-platform file browser.
+\end{itemize}
+
+The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available at the project GitHub page \footnote{\url{https://github.com/Climber-Tools/Cled}}.
 
 \subsection{Modes}
-The k
+The editor contains three modes in which 
+
+\subsection{Hold picking}
+Picking which holds to place on the wall quickly is crucial for effective virtual route setting.
+The editor contains a hold picking menu from which a subset of holds can be selected and cycled while editing.
+Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
+Additionally, hovering on each of the holds rotates them around, which is useful when the static hold image isn't descriptive enough.
+
+TODO: obrázek toho vybírání
 
 
 \subsection{Import and Export}
+The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
+Here is an example of one such file:
+
+TODO: příklad souboru
 
 \subsection{Capturing images}
 

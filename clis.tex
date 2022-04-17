@@ -1,0 +1,68 @@
+\chapter{Clis quickstart}
+
+\section{Setting up}
+
+For the setup, you'll need to first install \texttt{pyenv}:
+
+\begin{minted}{text}
+curl https://pyenv.run | bash
+\end{minted}
+
+and configure your shell's environment: \url{https://github.com/pyenv/pyenv\#basic-github-checkout}.
+You'll then need to install Python \texttt{3.7.x} (due to Metashape and Blender working only with older Python versions):
+
+\begin{minted}{text}
+pyenv install -v 3.7.12
+\end{minted}
+
+To set up the virtual environment, do (in this directory)
+
+\begin{minted}{text}
+pyenv virtualenv 3.7.12 clis
+pyenv local clis
+pyenv activate clis
+pyenv exec pip install -r requirements.txt
+pyenv exec bpy_post_install
+\end{minted}
+
+\section{Contents}
+
+Before running the scripts (using \texttt{pyenv\ exec}), it is advisable
+to check the configuration file \texttt{config.py}, since a lot of the values will most likely
+differ from their default values for your particular setup. Each of the
+respective folders contain a \texttt{README.md} that further explains
+the usage of each of the scripts.
+
+\begin{itemize}
+	\item \texttt{01-scanning/} -- tools for scanning the holds.
+	\item \texttt{02-processing/} -- tools for processing the hold images into models.
+	\item \texttt{03-data/} -- hold data format specification + tools for managing the models.
+\end{itemize}
+
+\section{Sample usage}
+
+Run
+
+\begin{minted}{text}
+pyenv exec python 01-scanning/01-scan.py automatic 15 \
+	&& pyenv exec python 01-scanning/02-copy.py camera \
+	&& pyenv exec python 01-scanning/03-convert.py
+\end{minted}
+
+to automatically take 15 pictures of the hold, copy it from the camera
+and convert it from raw. If you want to take them manually because you
+don't have the turntable, replace \texttt{automatic} with
+\texttt{manual}. Then run
+
+\begin{minted}{text}
+pyenv exec python 02-processing/01-model.py
+\end{minted}
+
+To generate the model. Finally, run
+
+\begin{minted}{text}
+pyenv exec python 03-data/01-add_models.py
+\end{minted}
+
+To add the information about the hold to the \texttt{holds.yaml}
+dictionary.
