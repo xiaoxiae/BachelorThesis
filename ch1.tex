@@ -4,14 +4,14 @@
 Broadly speaking, photogrammetry is the process of obtaining information about objects (namely their model) using images.
 Because the problem is difficult and involves a lot of steps and specialized algorithms, many open-source and proprietary programs have been developed to simplify this task.
 
-The thesis uses the Agisoft Metashape software due to its highly configurable API.
-Since it is proprietary and closed-source, there is no easy way to describe and cite the exact algorithms used.
+The thesis uses the Agisoft Metashape software due to its highly configurable Python API and quality of generated models.
+Since it is closed-source, there is no easy way to describe and cite the exact algorithms used.
 However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost} outlined the general methods used, which this section aims to cover.
 
 Starting with a set of images and ending with a textured model, the process can be split into the following parts:
 
 \begin{enumerate}
-	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, 3D viewpoint change and illumination
+	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, viewpoint change and illumination
 	\item \textbf{feature matching:} match features across multiple images
 	\item \textbf{bundle adjustment:} find the approximate positions of the camera and the matched features (obtaining „structure from motion“ data)
 	\item \textbf{dense pointcloud generation:} obtain additional features (along with their normals) for higher model quality
@@ -55,44 +55,45 @@ For the vectors to be invariant to orientation and contrast changes, a canonical
 
 \subsection{Feature matching}
 Once the vectors in canonical representation have been calculated, the images are examined pairwise.
-For each feature in one image, the nearest neighbour (in terms of the distance from one vector to another in a suitable norm) is found in the other.
+For each feature in one image, the nearest neighbour (in terms of the vector distance in a suitable norm) is found in the other.
 To filter out features that only appear in one of the images, a limit is inposed on the ratio of the distances between the closest and the second closest neighbour -- intuitively, correct matches should have one good candidate, not many.
 
-Since the number of features to match can be quite large and no efficient exact algorithms exist for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}.
-It returns the nearest neighbour with a high probability, otherwise returning a close one.
-The algorithm internally uses a $k$-d tree to partition the space into bins of the feature vectors which it then searches.
+Since the number of features to match can be quite large and no efficient exact algorithms exist for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}, returning the nearest neighbour with a high probability, otherwise returning a close one.
+The algorithm internally constructs a $k$-d tree to partition the space into bins of the feature vectors which it then searches in an efficient way.
 
 \subsection{Bundle adjustment}
 After the features have been determined and matched across the images, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
 This is referred to as the bundle adjustment problem \cite{snavely2008modeling,schneider19913}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
 
-Formally, we can model the scene by a vector of 3D points $\mathbf{X}_{i \in [n]}$, taken from cameras with parameters (position, focal length, etc.) given by the vector $\mathbf{P}_{j \in [m]}$.
-Our matched features are observations $\underline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
+Formally, we can model the scene by vectors of 3D points $\mathbf{X}_{i \in [n]}$, taken from cameras with parameters (position, focal length, etc.) given by vectors $\mathbf{P}_{j \in [m]}$.
+Our features can then be seen as observations $\underline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
 
-Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that takes the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, and returns the observation position $\mathbf{x}_{i, j}$.
+Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that takes the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, and returns the calculated observation position $\mathbf{x}_{i, j}$.
 Using this, the bundle adjustment problem can be formulated as a minimization problem of the function \begin{equation} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) = \underline{\bm{x}}_{ij} - \bm{x}(\mathbf{X}_i, \mathbf{P}_j) \end{equation}
 over the observed features and an appropriate cost function.
 
 One such cost function is the nonlinear least squares method, formulated as 
 \begin{equation} \frac{1}{2} \sum_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j)^T W_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) \end{equation}
-where each $W_i$ is a symetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse covariance of $\underline{\bm{x}}_{ij}$.
+where each $W_i$ is a symetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
 
 \subsection{Dense pointcloud generation}
+
+% TODO!
 
 \subsection{Surface reconstruction}
 The algorithm used is the poisson surface reconstruction \cite{kazhdan2006poisson}.
 It takes points in 3D space and their normals (oriented towards the object), and constructs a function that represents the surface.
 It does this by computing an indicator function $\chi$ that is $0$ outside of the model and $1$ inside.
 
-Since the gradient of this indicator function is a vector field whose values near the surface are the point normals, the problem can again be formulated as a minimalization problem in terms of minimizing the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
+Since the gradient of this indicator function (when convoluted with a suitable smoothning filter) is a vector field, whose values near the surface are the point normals, the problem can be formulated as a minimalization problem in terms of the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
 \begin{equation} \min_\chi || \nabla \chi - \vec{V}|| \end{equation}
 
 Least squares are again used to find the approximate solution. 
 
 \subsection{Texturing}
 All that is left is to create a texture for the modeled object.
-Since both the model and the camera position are known at this point, the images can be projected onto the faces in view (given that the face has the correct normal and is thus pointed towards the camera).
-Additional steps can be taken to normalize certain properties of the images like the brightness, contrast, etc.
+Since both the model and the camera position are known at this point, the images can be projected onto the faces in view (given that the face is pointed towards the camera).
+Additional steps can be taken to normalize certain properties of the images such as the brightness, contrast, etc.
 
 \section{Using markers}
 In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and positioned (in either local or world coordinates) such that it corresponds to its size in the real world.
@@ -102,7 +103,7 @@ Since their position in space is known (measured in advance), it can be used to 
 
 \begin{figure}
 	\centering
-	\includesvg[width=0.7\columnwidth]{images/targets.svg}
+	\includesvg[width=0.8\columnwidth]{images/targets.svg}
 	\caption{18th 14-bit marker (left) and the corresponding binary value (right). Grey segment denotes an opposing pair of $1$ bits, blue circle denotes the parity bit.}
 \end{figure}
 
@@ -119,4 +120,4 @@ For decoding correctness and robustness, the following constraints are additiona
 	\item there must exist an opposing pair of $1$ bits
 \end{itemize}
 
-After the positions of the markers are determined in the 3D space (they are just a special type features described in \ref{ch:fext}), it is just a matter of linear algebra to transform the other features appropriately.
+After the positions of the markers are determined in the 3D space (they are just a special type of features described in \ref{ch:fext}), it is just a matter of simple linear algebra to transform the position of other features appropriately.

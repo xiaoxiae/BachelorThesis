@@ -1,10 +1,10 @@
 \chapter{Realization}
 
-The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models}, \textbf{editor implementation}.
+The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models} and the \textbf{editor implementation}.
 Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
 \begin{itemize}
-	\item \raisebox{-0.08em}{\includesvg[height=\baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
-	\item \raisebox{-0.08em}{\includesvg[height=\baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
+	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
+	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
 \end{itemize}
 
 \section{Creating wall model}
@@ -14,7 +14,7 @@ This model was then manually edited in Blender 3D to remove possible modelling e
 Since the wall consists only of straight segments connected together, this can be done relatively easily.
 After manual changes, the resulting model was reimported to Metashape to generate the texture from the photos.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\columnwidth]{images/wall/image.png}
 	\caption{The model of the Smíchoff wall, created using Metashape and Blender.}
@@ -29,12 +29,12 @@ It is important to automize as many steps as possible so that the amount of manu
 This has been acomplished using a turntable-based workflow, upon which the holds are placed and scanned.
 The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing) to generate the model.
 
-The resulting workflow can process a single hold in $\sim 40$ seconds of scanning (taking $12$ photos, varies depending on lighting conditions), plus  $\sim4$ minutes of processing.
+The resulting workflow can process a single hold in $\sim 40$ seconds of scanning (taking $12$ photos and varying depending on the lighting conditions), plus  $\sim4$ minutes of processing.
 
 \subsection{Turntable design}
-A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer \label{ref:turntable}.
+A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
 An Arduino board and A4988 motor controllers are used for fine motor control (figure \ref{fig:wiring}).
-The communication with the Arduino is implemented via USB using the serial port.
+The communication with the Arduino is implemented via the serial port.
 
 \begin{figure}
 	\centering
@@ -64,17 +64,20 @@ The top area is connected to a plexiglass with a marked center and 4 markers.
 
 \subsection{Environment setup}
 Two LED lights, mounted on adjustable stands and covered with baking paper (for light diffusion) were used to achieve good lighting conditions.
-A large black cloth was used as a background around the turntable to minimize the number of unwanted image features.
+A large black cloth was used as a background around the turntable to minimize the number of unwanted image features (see figure \ref{fig:setup}).
 
 Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
 This meant that the exposure time was usually around $~1.5$ seconds.
 
-The entire setup was carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
+The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
+Additionaly, all of the setup components (including the turntable, excluding the camera) can be purchased for under $4000$ CZK, making it relatively affordable.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{images/setup/setup.png}
-	\caption{An image of the setup during scanning, including the taken image.}
+	\caption{An image of the setup during scanning, including the taken image. f-stop: 22, focal length: 38mm, ISO: 320, exposure time: 1s.}
+	  
+	\label{fig:setup}
 \end{figure}
 
 \subsection{Dual texture holds}
@@ -91,11 +94,11 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 
 \begin{figure}
 	\centering
-	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
 	\hfill
-	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/2.png} }}%
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/2.png} }}%
 	\hfill
-	\subfloat[\centering]{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
 	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
 	\label{fig:chalk}
 \end{figure}
@@ -110,13 +113,22 @@ Besides the builtin libraries, a number of freely available user packages were u
 	\item \textbf{StandaloneFileBrowser} \footnote{\url{https://github.com/gkngkc/UnityStandaloneFileBrowser}} -- a cross-platform file browser.
 \end{itemize}
 
-The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available at the project GitHub page \footnote{\url{https://github.com/Climber-Tools/Cled}}.
+The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available at the project GitHub page.
 
 \subsection{Modes}
-The editor contains three modes in which 
+The editor contains three modes in which can operate, with the current mode being always displayed in the top right.
+While this might seem like an implementation detail, it is arguably important for user documentation and general usage.
+An obvious inspiration is the Vim text editor, which makes the mode distinction similarly apparent.
+The modes are the following:
+
+\begin{itemize}
+		\item \textbf{NORMAL} -- the mode the user is usually in; hovering highlights holds, which can be either picked up or selected.
+		\item \textbf{HOLDING} -- the mode in which the user is holding a specific hold.
+		\item \textbf{ROUTE} -- the mode in which the user modifies the selected route.
+\end{itemize}
 
 \subsection{Hold picking}
-Picking which holds to place on the wall quickly is crucial for effective virtual route setting.
+Picking which holds to place on the wall quickly is crucial for effective virtual route setting, because it dictates the time the route setting takes.
 The editor contains a hold picking menu from which a subset of holds can be selected and cycled while editing.
 Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
 Additionally, hovering on each of the holds rotates them around, which is useful when the static hold image isn't descriptive enough.
@@ -126,9 +138,10 @@ TODO: obrázek toho vybírání
 
 \subsection{Import and Export}
 The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
+This makes it easy to be used in other applications (both for viewing and modification), since it is well readable and parsable.
 Here is an example of one such file:
 
 TODO: příklad souboru
 
 \subsection{Capturing images}
-
+The editor includes functionality for capturing the current image of the wall.
