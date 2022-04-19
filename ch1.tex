@@ -23,7 +23,7 @@ The following sections aim to cover each of these in part.
 
 \subsection{Feature extraction} \label{ch:fext}
 The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive,snavely2008modeling}.
-Each of the features is a vector, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
+Each of the features is a vector describing some feature of the 2D image, invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
 To find such vectors, a Gaussian scale-space is used.
 
 Formally, a scale-space for a given 2D image $I(x, y)$ is defined as a function
@@ -32,8 +32,10 @@ Formally, a scale-space for a given 2D image $I(x, y)$ is defined as a function
 The $\times$ symbol is a convolution of the two functions in $x$ and $y$, and $G$ is the Gaussian function
 \begin{equation}G(x, y, \sigma) = \frac{1}{2\pi \sigma^2} e^{-(x^2 + y^2) / 2\sigma^2}\end{equation}
 
-	This operation is then applied twice on image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$ (see figure \ref{fig:gaussexample}).
+This operation is applied twice on image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$ (see figure \ref{fig:gaussexample}).
 After this, the image $I_{2,1}$ is downscaled by a certain factor (the original method uses $1.5$ with bilinear interpolation) and the process is repeated, yielding $I_{1,2}, I_{2,2}$ and $G_2$, respectively.
+
+% TODO: pořádně popsat parametry (this operation)
 
 \begin{figure}
 	\centering
@@ -42,10 +44,10 @@ After this, the image $I_{2,1}$ is downscaled by a certain factor (the original 
 	\label{fig:gaussexample}
 \end{figure}
 
-To find the features, the local minima and maxima (compared to the 8 neighbouring pixels) of $G_1$ are examined -- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are chosen as the key points.
+To find the features, the local minima and maxima (compared to the 8 neighbouring pixels) of the pixels of $G_1$ are examined -- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are selected.
 The intuitive idea behind this approach is to suppress the finer details of the image, since each of the features in the coarse version of the image should be present in more detail in the original \cite{scalespace}.
 
-To calculate the vectors for the key points, the magnitude $M(x,y)$ and orientation $R(x,y)$ is calculated using their neighbouring points via the following formula:
+To calculate the vectors for the selected features, the magnitude $M(x,y)$ and orientation $R(x,y)$ is calculated using their neighbouring points via the following formula:
 \begin{align}
 	M(x,y) &= \sqrt{\left(I_{1,1}(x, y) - I_{1,1}(x + 1, y)\right)^2 + \left(I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)^2} \\[0.7em]
 	R(x,y) &= \mathrm{atan2} \left(I_{1,1}(x, y) - I_{1,1}(x + 1, y), I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)
@@ -56,7 +58,7 @@ For the vectors to be invariant to orientation and contrast changes, a canonical
 \subsection{Feature matching}
 Once the vectors in canonical representation have been calculated, the images are examined pairwise.
 For each feature in one image, the nearest neighbour (in terms of the vector distance in a suitable norm) is found in the other.
-To filter out features that only appear in one of the images, a limit is inposed on the ratio of the distances between the closest and the second closest neighbour -- intuitively, correct matches should have one good candidate, not many.
+To filter out features that only appear in one of the images, a limit is imposed on the ratio of the distances between the closest and the second closest neighbour (intuitively, correct matches should have one good candidate, not many).
 
 Since the number of features to match can be quite large and no efficient exact algorithms exist for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}, returning the nearest neighbour with a high probability, otherwise returning a close one.
 The algorithm internally constructs a $k$-d tree to partition the space into bins of the feature vectors which it then searches in an efficient way.
@@ -68,24 +70,22 @@ This is referred to as the bundle adjustment problem \cite{snavely2008modeling,s
 Formally, we can model the scene by vectors of 3D points $\mathbf{X}_{i \in [n]}$, taken from cameras with parameters (position, focal length, etc.) given by vectors $\mathbf{P}_{j \in [m]}$.
 Our features can then be seen as observations $\underline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
 
-Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that takes the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, and returns the calculated observation position $\mathbf{x}_{i, j}$.
-Using this, the bundle adjustment problem can be formulated as a minimization problem of the function \begin{equation} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) = \underline{\bm{x}}_{ij} - \bm{x}(\mathbf{X}_i, \mathbf{P}_j) \end{equation}
-over the observed features and an appropriate cost function.
-
-One such cost function is the nonlinear least squares method, formulated as 
+Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that, given the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, models the calculated observation position $\mathbf{x}_{i, j}$.
+Given this function, the bundle adjustment problem can be formulated as a minimization problem of the function \begin{equation} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) = \underline{\bm{x}}_{ij} - \bm{x}(\mathbf{X}_i, \mathbf{P}_j) \end{equation}
+over the observed features, and an appropriate cost function. One such cost function is the nonlinear least squares method, formulated as 
 \begin{equation} \frac{1}{2} \sum_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j)^T W_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) \end{equation}
-where each $W_i$ is a symetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
+where each $W_i$ is a symmetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
 
 \subsection{Dense pointcloud generation}
 
 % TODO!
 
 \subsection{Surface reconstruction}
-The algorithm used is the poisson surface reconstruction \cite{kazhdan2006poisson}.
+One of the algorithms that can be used is Poisson surface reconstruction \cite{kazhdan2006poisson}.
 It takes points in 3D space and their normals (oriented towards the object), and constructs a function that represents the surface.
-It does this by computing an indicator function $\chi$ that is $0$ outside of the model and $1$ inside.
+It does this by first computing a piecewise indicator function $\chi$ that is $0$ outside of the model and $1$ inside.
 
-Since the gradient of this indicator function (when convoluted with a suitable smoothning filter) is a vector field, whose values near the surface are the point normals, the problem can be formulated as a minimalization problem in terms of the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
+Since the gradient of this indicator function (when convoluted with a suitable smoothing filter) is a vector field, whose values near the surface are the point normals, the problem can be formulated as a minimization problem in terms of the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
 \begin{equation} \min_\chi || \nabla \chi - \vec{V}|| \end{equation}
 
 Least squares are again used to find the approximate solution. 
@@ -101,7 +101,7 @@ In certain cases (such as this one), it is necessary for the generated model to 
 A simple approach for local coordinates is to use easily recognizable markers placed around the scanned object.
 Since their position in space is known (measured in advance), it can be used to infer the correct scale of the entire model.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includesvg[width=0.8\columnwidth]{images/targets.svg}
 	\caption{18th 14-bit marker (left) and the corresponding binary value (right). Grey segment denotes an opposing pair of $1$ bits, blue circle denotes the parity bit.}

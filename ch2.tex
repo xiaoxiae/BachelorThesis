@@ -26,7 +26,7 @@ After manual changes, the resulting model was reimported to Metashape to generat
 Since a regular climbing wall contains hundreds or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
 It is important to automize as many steps as possible so that the amount of manual work done is minimized.
 
-This has been acomplished using a turntable-based workflow, upon which the holds are placed and scanned.
+This has been accomplished using a turntable-based workflow, upon which the holds are placed and scanned.
 The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing) to generate the model.
 
 The resulting workflow can process a single hold in $\sim 40$ seconds of scanning (taking $12$ photos and varying depending on the lighting conditions), plus  $\sim4$ minutes of processing.
@@ -44,16 +44,29 @@ The communication with the Arduino is implemented via the serial port.
 \end{figure}
 
 To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 directly in the middle).
-Additionally, gears mounted to the motors turn the top of the turntable, achieving a TODO reduction.
+Additionally, gears mounted to the motors turn the top of the turntable, achieving a 90:12 reduction.
 This allows the turntable to handle objects of weight up to TODO (heavier objects have to be turned manually).
 
 \begin{figure}
+	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
 	\centering
 	\subfloat[\centering Top part.]{{\includegraphics[height=3.6cm]{images/turntable/top.png} }}%
 	\hfill
-	\subfloat[\centering Base part from the top.]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
+	\subfloat[\centering Base part (side).]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
 	\hfill
-	\subfloat[\centering Base part from the side.]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
+	\subfloat[\centering Base part (top).]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
+	\\
+	\qquad
+	\qquad
+	\subfloat[\centering Motor mount.]{{\includegraphics[height=2.6cm]{images/turntable/mount.png} }}%
+	\hfill
+	\subfloat[\centering Motor gear (side).]{{\includegraphics[height=2.6cm]{images/turntable/gear-side.png} }}%
+	\hfill
+	\subfloat[\centering Motor gear (top).]{{\includegraphics[height=2.6cm]{images/turntable/gear-top.png} }}%
+	\qquad
+	\qquad
+	\quad
+	\qquad
 	\caption{Parts of the model of the turntable, created using Fusion360.}%
 	\label{fig:turntable}
 \end{figure}
@@ -113,7 +126,7 @@ Besides the builtin libraries, a number of freely available user packages were u
 	\item \textbf{StandaloneFileBrowser} \footnote{\url{https://github.com/gkngkc/UnityStandaloneFileBrowser}} -- a cross-platform file browser.
 \end{itemize}
 
-The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available at the project GitHub page.
+The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available on the project GitHub page.
 
 \subsection{Modes}
 The editor contains three modes in which can operate, with the current mode being always displayed in the top right.
@@ -138,7 +151,7 @@ TODO: obrázek toho vybírání
 
 \subsection{Import and Export}
 The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
-This makes it easy to be used in other applications (both for viewing and modification), since it is well readable and parsable.
+This makes it easy to be used in other applications (both for viewing and modification), since it is well readable and parseable.
 Here is an example of one such file:
 
 TODO: příklad souboru
