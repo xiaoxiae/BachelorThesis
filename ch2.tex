@@ -1,20 +1,28 @@
 \chapter{Realization}\label{sec:realization}
 
-The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models} and the \textbf{editor implementation}.
+The realization of the project can be separated into three distinct parts: \textbf{creating the wall model}, \textbf{creating hold models} and the \textbf{editor implementation}.
 Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
 \begin{itemize}
 	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/clis.svg}} -- the climber's scanner \cite{clis}
 	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/cled.svg}} -- the climber's editor \cite{cled}
 \end{itemize}
 
-TODO: discuss other photogrammetry softwares
+Agisoft Metashape was used for 3D model generation.
+While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
+\begin{itemize}
+	\item It created the highest quality models out of all tested software.
+	\item It includes a free 30-day trial that was used to generate the datasets.
+	\item It includes a well-documented Python API.
+\end{itemize}
 
-\section{Creating wall model}
+Besides photogrammetry, another option that was considered for generating the models was laser scanning.
+This was not a viable option because of the price~--~products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) to possibly improve the image quality cost upwards of $400$\$ dollars.
+Additionally, since some of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be augmented with laser scanning in the future with only minor changes.
+
+\section{Creating the wall model}
 The wall model (figure \ref{fig:model}) has been created semi-automatically.
+
 First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
-
-While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free)
-
 This model was then manually edited in Blender 3D to remove possible modelling errors.
 Since the wall consists only of straight segments connected together, this can be done relatively easily.
 After manual changes, the resulting model was reimported to Metashape to generate the texture from the photos.
@@ -34,7 +42,7 @@ It is important to automate as many steps as possible so that the amount of manu
 This has been accomplished using a turntable-based workflow, upon which the holds are placed and scanned.
 The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing) to generate the model.
 
-The resulting workflow can process a single hold in $40$ seconds of scanning (taking $12$ photos and varying depending on the lighting conditions) and additional $4$ minutes of processing.
+The resulting workflow can process a single hold in \SI{40}{\second} of scanning (taking $12$ photos and varying depending on the lighting conditions) and additional $4$ minutes of processing.
 
 \subsection{Turntable design}
 A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
@@ -50,7 +58,7 @@ The communication with the Arduino is implemented via the serial port.
 
 To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 directly in the middle).
 Additionally, gears mounted to the motors turn the top of the turntable, achieving a 90:12 reduction.
-This allows the turntable to handle objects of weight up to TODO (heavier objects have to be turned manually).
+This allows the turntable to handle objects of weight up to \SI{8}{\kilo\gram}, with heavier objects requiring manual turning.
 
 \begin{figure}
 	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
@@ -83,7 +91,7 @@ Two LED lights, mounted on adjustable stands and covered with baking paper (for 
 A large black cloth was used as a background around the turntable to minimize the number of unwanted image features (see figure \ref{fig:setup}).
 
 Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
-This meant that the exposure time was usually around $~1.5$ seconds.
+This meant that the exposure time was usually around \SI{1.5}{\second}.
 
 The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
 Additionally, all of the setup components (including the turntable, excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
@@ -91,7 +99,7 @@ Additionally, all of the setup components (including the turntable, excluding th
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{images/setup/setup.png}
-	\caption{An image of the setup during scanning, including the taken image. f-stop: 22, focal length: 38mm, ISO: 320, exposure time: 1s.}
+	\caption{An image of the setup during scanning, including the taken image. f-stop: 22, focal length: \SI{38}{\milli\meter}, ISO: 320, exposure time: \SI{1}{\second}.}
 	  
 	\label{fig:setup}
 \end{figure}
@@ -121,9 +129,9 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 
 \section{Editor implementation}
 The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
-While other options exist, such as Unreal Engine and Godot, Unity was chosen due to the author's experience with developing games using it, along with the large ecosystem of packages that could be used to simplify the implementation and allow for rapid prototyping.
+While other options exist, such as Unreal Engine and Godot, Unity was chosen due to the author's experience with developing games using it, along with a large ecosystem of packages that could be used to simplify the implementation and allow for rapid prototyping.
 
-Using this ecosystem, a number of freely available packages were used (with minor modifications), namely
+Using this ecosystem, a number of freely available packages were used (with minor code modifications), namely
 
 \begin{itemize}
 	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator (for hold outlines),
@@ -135,10 +143,13 @@ The editor is cross-platform and can be run on Mac, Windows and Linux, with the 
 
 \subsection{Wall and hold format}
 For the editor to correctly load the scene, it expects the wall and holds to be in the \verb|obj| file format, possibly with a \verb|mtl| file and a bitmap texture.
-To simplify this, the editor contains a Python script to automatically import models from Clis and generate preview images and videos for them.
+It has specific requirements on naming and location of the files which differs slightly from Clis.
+This is because the editor uses only a subset of the files generated from Clis along with a few that Clis doesn't generate.
+To make things easier, the editor contains a Python script to automatically import models from Clis and generate the missing files, which are preview images and preview videos.
 
-Additionally, the wall can contain a \verb|yaml| metadata file for wall-specific things, namely the route grades, the names of the setters and which zone the route is located in.
-This is to simplify editing route properties by selecting the right option from a dropdown, instead of having to manually type it in. Here is an example of one such file:
+The wall can also contain a \verb|yaml| metadata file for wall-specific things, namely the route grades, the names of the setters and which zone the route is located in.
+This is to simplify editing route properties by selecting the right option from a dropdown, instead of having to manually type it in.
+Here is an example of one such file:
 
 \begin{minted}{yaml}
 Grades: ["black", "purple", "red", "salmon", "blue", "yellow"]
@@ -173,22 +184,25 @@ This makes it easy to be used in other applications (both for viewing and modifi
 Here is how the format looks like:
 
 \begin{minted}{yaml}
+# Cled version (for future compatibility reasons)
+Version: 1.0
+
 Player:
   Light: false # whether the player's light is on
   Position: # the player position as a vector
     x: 4.66010237
     y: 1.93126345
     z: -8.63198185
-  Orientation: # the player orientation as a quaternion
-    w: 0.825024903
-    x: 0.117302731
-    y: -0.54728353
-    z: 0.0778122842
+  Orientation: # the player orientation (up/down, left/right)
+    x: 35.8053398
+    y: 123.996086
+  Flying: false # whether the player is currently flying
 
 # path to the wall and the holds
-WallModelPath: /home/xiaoxiae/Downloads/Wall/wall.obj
-HoldModelsPath: /home/xiaoxiae/Downloads/Holds
+WallModelPath: /home/tom/Wall/wall.obj
+HoldModelsPath: /home/tom/Holds
 
+# a dictionary of hold instances
 Holds:
   f21cde933ad9: # a unique ID for the hold instance
     BlueprintId: 4bdff2704462 # an ID of the hold model
@@ -197,7 +211,7 @@ Holds:
         x: 1.20504105
         y: 0.378549755
         z: -7.67928696
-    Normal: # the normal of the wall (where is it facing)
+    Normal: # the normal of the hold, away from the wall
         x: 0.994500279
         y: 0.0156783238
         z: 0.103554823
@@ -215,6 +229,7 @@ Holds:
         z: 0.657852829
       Rotation: 1.21387374
 
+# a list of hold routes
 Routes:
 - Name: A very nice route
   Grade: blue
@@ -228,11 +243,17 @@ Routes:
 StartingHoldIDs: ["f21cde933ad9"]
 EndingHoldIDs: ["0436ff53a1d8"]
 
-# the positions of lights around the wall + their parameters
+# list of point lights around the wall
 Lights:
-  Positions: []
-  Intensity: 0.2 # how strong the light is
-  ShadowStrength: 0.2 # how hard the shadows are
+  Positions:
+  - x: 3.71035504
+    y: 3.53241396
+    z: -7.11679459
+  - x: 5.59678602
+    y: 3.53241396
+    z: -3.97351503
+  Intensity: 0.2 # how strong they are
+  ShadowStrength: 0.2 # how hard their shadows are
 \end{minted}
 
 \subsection{Capturing images}
@@ -241,3 +262,9 @@ This can be done anywhere in the editor by either selecting the option from the 
 The image is then saved to the default system „Pictures“ folder, unless configured otherwise in the settings.
 
 TODO: some images!
+
+\subsection{Lighting}
+Since each wall has different lighting needs and specifying them in the wall metadata would be too impractical, the editor supports placing lights on the current player position (and removing them).
+This can be done either from the \verb|Lighting| section of the toolbar, or by using \verb|F| to toggle the player lighting and \verb|Ctrl+F| to place it.
+
+TODO: image before lighting scene and after lighting scene
