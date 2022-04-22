@@ -3,8 +3,8 @@
 The realization of the project can be separated into three distinct parts: \textbf{creating wall model}, \textbf{creating hold models} and the \textbf{editor implementation}.
 Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
 \begin{itemize}
-	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/clis.svg}} -- the climber's scanner \footnote{\url{https://github.com/Climber-Apps/Clis}}
-	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/cled.svg}} -- the climber's editor \footnote{\url{https://github.com/Climber-Apps/Cled}}
+	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/clis.svg}} -- the climber's scanner \cite{clis}
+	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/cled.svg}} -- the climber's editor \cite{cled}
 \end{itemize}
 
 TODO: discuss other photogrammetry softwares
@@ -126,9 +126,9 @@ While other options exist, such as Unreal Engine and Godot, Unity was chosen due
 Using this ecosystem, a number of freely available packages were used (with minor modifications), namely
 
 \begin{itemize}
-	\item \textbf{Quick Outline} \footnote{\url{https://assetstore.unity.com/packages/tools/particles-effects/quick-outline-115488}} -- object outline creator (for hold highlights),
-	\item \textbf{OBJImport} \footnote{\url{https://assetstore.unity.com/packages/tools/modeling/runtime-obj-importer-49547}} -- an \verb|.obj| file importer (including texture files) and
-	\item \textbf{StandaloneFileBrowser} \footnote{\url{https://github.com/gkngkc/UnityStandaloneFileBrowser}} -- a cross-platform file browser.
+	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator (for hold outlines),
+	\item \textbf{Runtime OBJ Importer} \cite{objimport} -- an \verb|.obj| file importer and
+	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
 \end{itemize}
 
 The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available on the project GitHub page.
