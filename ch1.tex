@@ -4,15 +4,15 @@
 Broadly speaking, photogrammetry is the process of obtaining information about objects (namely their model) using images.
 Because the problem is difficult and involves a lot of steps and specialized algorithms, many open-source and proprietary programs have been developed to simplify this task.
 
-The thesis uses the Agisoft Metashape software due to its highly configurable Python API and quality of generated models.
+The thesis uses the Agisoft Metashape software due to its highly configurable Python API and quality of generated models, with alternates being discussed in section \ref{sec:realization}.
 Since it is closed-source, there is no easy way to describe and cite the exact algorithms used.
-However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost} outlined the general methods used, which this section aims to cover.
+However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost}, with addition to the license files for various open-source projects, outline the general methods used.
 
 Starting with a set of images and ending with a textured model, the process can be split into the following parts:
 
 \begin{enumerate}
 	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, viewpoint change and illumination
-	\item \textbf{feature matching:} match features across multiple images
+	\item \textbf{feature matching:} find matching features across multiple images
 	\item \textbf{bundle adjustment:} find the approximate positions of the camera and the matched features (obtaining „structure from motion“ data)
 	\item \textbf{dense pointcloud generation:} obtain additional features (along with their normals) for higher model quality
 	\item \textbf{surface reconstruction:} reconstruct the surface of the model
@@ -72,7 +72,7 @@ Our features can then be seen as observations $\underline{\bm{x}}_{ij}$ of point
 
 Let's now assume that we have a function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that, given the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, models the calculated observation position $\mathbf{x}_{i, j}$.
 Given this function, the bundle adjustment problem can be formulated as a minimization problem of the function \begin{equation} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) = \underline{\bm{x}}_{ij} - \bm{x}(\mathbf{X}_i, \mathbf{P}_j) \end{equation}
-over the observed features, and an appropriate cost function. One such cost function is the nonlinear least squares method, formulated as 
+over the observed features, and an appropriate cost function. For estimation using nonlinear least squares, the cost function to minimize is the weighted sum of squared error, formulated as 
 \begin{equation} \frac{1}{2} \sum_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j)^T W_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) \end{equation}
 where each $W_i$ is a symmetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
 
@@ -81,14 +81,15 @@ where each $W_i$ is a symmetric positive definite matrix indicating the weight o
 % TODO!
 
 \subsection{Surface reconstruction}
-One of the algorithms that can be used is Poisson surface reconstruction \cite{kazhdan2006poisson}.
+For surface reconstruction, the Poisson surface reconstruction \cite{kazhdan2006poisson} algorithm is used.
 It takes points in 3D space and their normals (oriented towards the object), and constructs a function that represents the surface.
-It does this by first computing a piecewise indicator function $\chi$ that is $0$ outside of the model and $1$ inside.
 
-Since the gradient of this indicator function (when convoluted with a suitable smoothing filter) is a vector field, whose values near the surface are the point normals, the problem can be formulated as a minimization problem in terms of the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
+It does this by first computing a piecewise indicator function $\chi$ that is $0$ outside of the model and $1$ inside. The gradient of this indicator function (when convoluted with a suitable smoothing filter) is a vector field, whose values near the surface are the point normals.
+
+The problem can thus be formulated as a minimization problem in terms of the difference between observed normals as a vector field (approximated by a discrete sum, since we only have a set of points and their normals), and the indicator function gradient:
 \begin{equation} \min_\chi || \nabla \chi - \vec{V}|| \end{equation}
 
-Least squares are again used to find the approximate solution. 
+Least squares are again used to find the approximate solution.
 
 \subsection{Texturing}
 All that is left is to create a texture for the modeled object.
@@ -110,7 +111,7 @@ Since their position in space is known (measured in advance), it can be used to 
 The type of the markers used in Metashape is based on \citet{schneider19913,borisPatent}.
 Each circular target contains an inner and outer circle, with the inner serving the purpose of locating the marker in the images and the outer for encoding the marker data.
 
-The exact number of stored bits depends on the size of the marker, most common beind $12$ and $14$ respectively.
+The exact number of stored bits depends on the size of the marker, most common being $12$ and $14$ respectively.
 The $0$ bits correspond to white segments and $1$ to black ones.
 For decoding correctness and robustness, the following constraints are additionally imposed on the targets:
 
