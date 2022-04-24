@@ -76,10 +76,22 @@ over the observed features, and an appropriate cost function. For estimation usi
 \begin{equation} \frac{1}{2} \sum_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j)^T W_{i,j} \Delta x_{i, j} (\mathbf{X}_i, \mathbf{M}_j) \end{equation}
 where each $W_i$ is a symmetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
 
+\begin{figure}
+	\centering
+	\subfloat{{\includegraphics[height=5cm]{images/sfm/side.png} }}%
+	\caption{Bundle adjustment calculation on a sample object, generated using Agisoft Metashape.}%
+\end{figure}
+
 \subsection{Dense pointcloud generation}
 Since the feature matching step generates a small number of features (to what would be considered a „high-quality mesh“), additional feature points have to be generated.
 The approach is based on generating depth-maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
 It can be separated into four distinct parts.
+
+\begin{figure}[t]
+	\centering
+	\subfloat{{\includegraphics[height=4.5cm]{images/dense/side.png} }}%
+	\caption{Dense pointcloud generation on a sample object, generated using Agisoft Metashape.}%
+\end{figure}
 
 \subsubsection{Stereo pair selection}
 Each image is paired with another image to generate its depth-map.
@@ -119,6 +131,14 @@ Least squares are again used to find the approximate solution.
 All that is left is to create a texture for the modeled object.
 Since both the model and the camera position are known at this point, the images can be projected onto the faces in view (given that the face is pointed towards the camera).
 Additional steps can be taken to normalize certain properties of the images such as the brightness, contrast, etc.
+
+\begin{figure}
+	\centering
+	\subfloat[Textured view.]{{\includegraphics[height=2.3cm]{images/texture/texture.png} }}%
+	\hfill
+	\subfloat[Wireframe view.]{{\includegraphics[height=2.3cm]{images/texture/wireframe.png} }}%
+	\caption{Final model of the sample object, generated using Agisoft Metashape.}%
+\end{figure}
 
 \section{Using markers}
 In certain cases (such as this one), it is necessary for the generated model to be correctly scaled and positioned (in either local or world coordinates) such that it corresponds to its size in the real world.
