@@ -137,12 +137,12 @@ The specification is as follows:
 
 \begin{minted}{yaml}
 <the first 12 characters of the sha256sum of model data>:
-  color: [<name>, <hex value>]
-  type: <the type of hold>
-  manufacturer: <the name of the manufacturer>
-  labels: [<list>, <of>, <custom>, <labels>]
-  volume: <a float volume of the hold>
-  date: <the date the hold model was created>
+  color: [<name>, <hex value>]                 # strings
+  type: <the type of hold>                     # string
+  manufacturer: <the name of the manufacturer> # string
+  labels: [<list>, <of>, <custom>, <labels>]   # strings
+  volume: <a float volume of the hold>         # float
+  date: <the date the hold model was created>  # datetime
 \end{minted}
 
 All of the specified attributes are optional.
@@ -203,7 +203,7 @@ Filtering holds can be done by selecting a specific hold color, type, manufactur
 By default, the currently filtered holds are also sorted first by their color, then by their type and finally by their volume.
 Additionally, hovering on each of the menu items rotates them around, which is useful when the static hold image isn't descriptive enough.
 
-TODO: obrázek toho vybírání
+TODO: obrázek UI
 
 
 \subsection{Import and Export}
@@ -289,10 +289,10 @@ The editor contains functionality for capturing the current image of the wall.
 This can be done anywhere in the editor by either selecting the option from the toolbar, or by pressing \verb|Ctrl+P|.
 The image is then saved to the default system „Pictures“ folder, unless configured otherwise in the settings.
 
-TODO: some images!
+TODO: obrázek UI
 
 \subsection{Lighting}
 Since each wall has different lighting needs and specifying them in the wall metadata would be too impractical, the editor supports placing lights on the current player position (and removing them).
 This can be done either from the \verb|Lighting| section of the toolbar, or by using \verb|F| to toggle the player lighting and \verb|Ctrl+F| to place it.
 
-TODO: image before lighting scene and after lighting scene
+TODO: obrázek UI
