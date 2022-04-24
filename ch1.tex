@@ -78,9 +78,31 @@ where each $W_i$ is a symmetric positive definite matrix indicating the weight o
 
 \subsection{Dense pointcloud generation}
 Since the feature matching step generates a small number of features (to what would be considered a „high-quality mesh“), additional feature points have to be generated.
-The approach is based on generating depth maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
+The approach is based on generating depth-maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
+It can be separated into four distinct parts.
 
-TODO: the actual method
+\subsubsection{Stereo pair selection}
+Each image is paired with another image to generate its depth-map.
+The paired image should view the object from a similar direction but a different viewing angle that is not too close (\ang{5}) and too far (\ang{60}).
+The camera centers should additionally be between $2 \overline{d}$ and $0.05 \overline{d}$, where $\overline{d}$ is the median of the distances between the neighbouring images.
+
+The optimal image is selected as the one with the minimum of the viewing angle multiplied by the camera distance, with the others (sorted and limited to 10) are considered the image neighbourhood $N_i$.
+
+\subsubsection{Depth-map computation}
+The core of the computation is based on the PatchMatch algorithm \cite{barnes2009PAR}.
+
+A random 3D point, along with a normal (thus forming a plane), is assigned to each of the pixels such that they are in the viewing ray of their camera.
+Now for each of the pixels, a square „patch“ is placed on the pixel and for each pixel in it, a matching cost is calculated.
+
+The pixels' matching cost is then iteratively improved either by moving its position to the plane of one of its neighbours, or by randomly changing it.
+
+\subsubsection{Depth-map refinement}
+To make the depth of the common areas consistent, each pixel of the depth-maps is considered.
+If its corresponding 3D point is close to its position in the neighbouring images $N_i$ (when projecting it onto the neighbouring image and then back using its depth-map), it is retained, otherwise it is removed from the depth-map.
+
+\subsubsection{Depth-map merging}
+The calculated depth-maps for each image are merged by projecting them back to 3D (given the camera position) and combining them to form the resulting dense point cloud.
+Duplicate depth-maps are filtered out by comparing their overlap with their neighbouring images.
 
 \subsection{Surface reconstruction}
 For surface reconstruction, the Poisson surface reconstruction algorithm \cite{kazhdan2006poisson} is used.
