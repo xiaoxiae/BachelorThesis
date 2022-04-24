@@ -77,11 +77,13 @@ over the observed features, and an appropriate cost function. For estimation usi
 where each $W_i$ is a symmetric positive definite matrix indicating the weight of the vector, chosen to be approximately the inverse measured covariance of $\underline{\bm{x}}_{ij}$ (to account for the accuracy of measured feature points).
 
 \subsection{Dense pointcloud generation}
+Since the feature matching step generates a small number of features (to what would be considered a „high-quality mesh“), additional feature points have to be generated.
+The approach is based on generating depth maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
 
-% TODO!
+TODO: the actual method
 
 \subsection{Surface reconstruction}
-For surface reconstruction, the Poisson surface reconstruction \cite{kazhdan2006poisson} algorithm is used.
+For surface reconstruction, the Poisson surface reconstruction algorithm \cite{kazhdan2006poisson} is used.
 It takes points in 3D space and their normals (oriented towards the object), and constructs a function that represents the surface.
 
 It does this by first computing a piecewise indicator function $\chi$ that is $0$ outside of the model and $1$ inside. The gradient of this indicator function (when convoluted with a suitable smoothing filter) is a vector field, whose values near the surface are the point normals.

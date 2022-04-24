@@ -10,14 +10,13 @@ Each of the respective parts are open-source projects on GitHub, licensed under 
 Agisoft Metashape was used for 3D model generation.
 While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
 \begin{itemize}
-	\item It created the highest quality models out of all tested software.
-	\item It includes a free 30-day trial that was used to generate the datasets.
+	\item It created the highest quality models out of all of the tested programs.
 	\item It includes a well-documented Python API.
 \end{itemize}
 
 Besides photogrammetry, another option that was considered for generating the models was laser scanning.
 This was not a viable option because of the price~--~products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) to possibly improve the image quality cost upwards of $400$\$ dollars.
-Additionally, since some of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be augmented with laser scanning in the future with only minor changes.
+However, since a number of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be combined with laser scanning in the future with only minor changes and a reasonable quality improvement, namely with more problematic holds (see section \ref{sec:dual}).
 
 \section{Creating the wall model}
 The wall model (figure \ref{fig:model}) has been created semi-automatically.
@@ -104,7 +103,7 @@ Additionally, all of the setup components (including the turntable, excluding th
 	\label{fig:setup}
 \end{figure}
 
-\subsection{Dual texture holds}
+\subsection{Dual texture holds}\label{sec:dual}
 Glossy surfaces are one of the most problematic types surfaces for photogrammetry, since the angle under which they are imaged change their appearance due to light reflecting into the camera.
 This poses a problem for „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
 They are increasingly used in modern bouldering and sports climbing, because they give setters more freedom in creating difficult routes.
@@ -116,6 +115,11 @@ In our case, however, the solution is rather obvious -- cover them in climbing c
 Since it is mate, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
 Additionally, since climbing chalk will be applied to the holds by climber during regular usage anyway, there is no need to obtain more images for texturing.
 
+It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
+In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
+
+The quality could be further improved by using laser scanning, which handles glossy surfaces better than using only images.
+
 \begin{figure}[H]
 	\centering
 	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
@@ -126,6 +130,23 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
 	\label{fig:chalk}
 \end{figure}
+
+\subsection{Hold metadata}
+After all models have been generated, a metadata file is created for all successfully generated ones.
+The specification is as follows:
+
+\begin{minted}{yaml}
+<the first 12 characters of the sha256sum of model data>:
+  color: [<name>, <hex value>]
+  type: <the type of hold>
+  manufacturer: <the name of the manufacturer>
+  labels: [<list>, <of>, <custom>, <labels>]
+  volume: <a float volume of the hold>
+  date: <the date the hold model was created>
+\end{minted}
+
+All of the specified attributes are optional.
+The first 12 characters of the hashsum were chosen for readability, and because tests for collisions on random data showed that tens of thousands of holds would be required for a reasonable chance of collision.
 
 \section{Editor implementation}
 The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
@@ -139,7 +160,11 @@ Using this ecosystem, a number of freely available packages were used (with mino
 	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
 \end{itemize}
 
-The editor is cross-platform and can be run on Mac, Windows and Linux, with the newest builds being freely available on the project GitHub page.
+The editor code is cross-platform and can be build on Mac, Windows and Linux, with the newest builds being freely available on the project GitHub page.
+
+\subsection{Movement}
+Movement is implemented using keyboard in a way commonly used in 3D programs.
+The arrow or \verb|WSAD| keys provide left, right, forward and backward movement, while the \verb|Space| and \verb|Shift| keys allow flying up and down.
 
 \subsection{Wall and hold format}
 For the editor to correctly load the scene, it expects the wall and holds to be in the \verb|obj| file format, possibly with a \verb|mtl| file and a bitmap texture.
@@ -161,19 +186,22 @@ Zones: ["1", "2", "3", "4", "5"]
 The editor contains three modes in which can operate, with the current mode being always displayed in the top right.
 While this might seem like an implementation detail, it is arguably important for user documentation and general usage, because the user always knows which state the editor.
 An obvious inspiration is the Vim text editor, which makes the mode distinction similarly apparent.
+
 The modes are the following:
 
 \begin{itemize}
-		\item \textbf{NORMAL} -- the mode the user is usually in; hovering highlights holds, which can be either picked up or selected.
-		\item \textbf{HOLDING} -- the mode in which the user is holding a specific hold and can place it or switch to the next one from the selection.
-		\item \textbf{ROUTE} -- the mode in which the user modifies the selected route by adding/removing new holds or modifying route parameters.
+	\item \textbf{NORMAL} -- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
+	\item \textbf{HOLDING} -- the mode in which the user is holding a specific hold and can place it, or switch to the next one from the selection.
+	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds, or modifying route parameters.
 \end{itemize}
 
-\subsection{Hold picking}
-Picking which holds to place on the wall quickly is crucial for effective virtual route setting, because it dictates the time the route setting takes.
-The editor contains a hold picking menu from which a subset of holds can be selected and cycled while editing.
+\subsection{Hold filtering}
+Quickly filtering which holds to place on the wall is crucial for effective virtual route setting, because it dictates the time the route setting takes.
+The editor contains a menu from which a subset of holds can be selected and cycled while editing, accessed via pressing either \verb|Tab| or \verb|Q|.
+
 Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
-Additionally, hovering on each of the holds rotates them around, which is useful when the static hold image isn't descriptive enough.
+By default, the currently filtered holds are also sorted first by their color, then by their type and finally by their volume.
+Additionally, hovering on each of the menu items rotates them around, which is useful when the static hold image isn't descriptive enough.
 
 TODO: obrázek toho vybírání
 

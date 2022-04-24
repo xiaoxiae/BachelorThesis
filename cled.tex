@@ -1,22 +1,79 @@
 \chapter{Cled quickstart}\label{apx:cled}
 
-\begin{table}[H]
-\begin{tabular}{@{}ll@{}}
+\section{Setting up}
+First, download the lastest version from the \href{https://github.com/Climber-Tools/Cled/releases}{Releases page}.
+
+To use Cled, you need a wall and holds dataset. A dataset example, along with the specification, can be found in \verb|Models/Example|.
+This dataset can then be imported to Cled either by \verb|File > New|, or by pressing
+\verb|Ctrl+N|.
+
+\section{Key bindings}
+
+While most of the controls are accessible via the UI, here is a comprehensive list of key bindings for efficiently controlling the editor:
+
+\subsection{Movement}
+
+\begin{tabular}[]{@{}ll@{}}
 \toprule
-\multicolumn{1}{c}{\textbf{Key}}     & \multicolumn{1}{c}{\textbf{Action}}           \\ \midrule
-left click                           & pick up/place the hovered/held hold           \\
-right click                          & select the hovered route                      \\
-                                     &                                               \\
-escape                               & opens the escape menu                         \\
-e                                    & toggles between \textbf{NORMAL} and \textbf{EDITING}\\
-tab or q                             & opens holds menu                              \\
-                                     &                                               \\
-d or delete                          & delete the hovered hold                       \\
-shift + left press + mouse (\textbf{EDITING}) & rotate the held hold                          \\
-t/b                                  & toggle the hovered hold as ending/starting    \\
-control + left click (\textbf{ROUTE})         & toggle the hovered hold in the route \\
-wheel up/down                        & cycle the selected holds                      \\ \bottomrule
+\verb|WSAD| & move forward/backward/left/right \\
+\verb|space| & fly upward \\
+\verb|shift| & fly downward \\
+\bottomrule
 \end{tabular}
-\label{The editor key bindings.}
-\end{table}
+
+\subsection{UI}
+
+\begin{tabular}[]{@{}ll@{}}
+\toprule
+\verb|Esc| & pause \\
+\verb|Q| or \verb|Tab| & open holds menu \\
+right button on selected route (ROUTE) & open route settings menu \\
+\bottomrule
+\end{tabular}
+
+\subsection{Editing}
+
+\begin{tabular}[]{@{}ll@{}}
+\toprule
+left button & pick up/place the hovered/held hold \\
+right button & select the hovered route \\
+\verb|E| & toggle between NORMAL and EDITING \\
+\verb|R| or \verb|Delete| & delete hovered hold \\
+middle button (EDITING) + mouse & rotate held hold \\
+\verb|T|/\verb|B| & toggle hovered hold as ending/starting \\
+control + left click (ROUTE) & toggle hovered hold as being in the
+route \\
+wheel up/down & cycle filtered holds \\
+\bottomrule
+\end{tabular}
+
+\subsection{Import/Export}
+
+\begin{tabular}[]{@{}ll@{}}
+\toprule
+\verb|Ctrl+N| & open new dataset \\
+\verb|Ctrl+O| & open existing Cled project \\
+\verb|Ctrl+S| & save project \\
+\verb|Ctrl+Shift+S| & save project as \\
+\verb|Ctrl+Q| & quit \\
+\bottomrule
+\end{tabular}
+
+\subsection{Images}
+
+\begin{tabular}[]{@{}ll@{}}
+\toprule
+\verb|Ctrl+P| & capture image \\
+\verb|Ctrl+Shift+P| & capture image as \\
+\bottomrule
+\end{tabular}
+
+\subsection{Lighting}
+
+\begin{tabular}[]{@{}ll@{}}
+\toprule
+\verb|F| & toggle user light \\
+\verb|Ctrl+F| & add new light at the user position \\
+\bottomrule
+\end{tabular}
 
