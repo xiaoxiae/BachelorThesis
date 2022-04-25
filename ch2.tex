@@ -10,23 +10,23 @@ Each of the respective parts are open-source projects on GitHub, licensed under 
 Agisoft Metashape was used for 3D model generation.
 While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
 \begin{itemize}
-	\item It created the highest quality models out of all of the tested programs.
-	\item It includes a well-documented Python API.
+	\item It created the highest quality models out of the tested programs, given a representative sample of the hold images.
+	\item It includes a well-documented Python API, along with good GUI.
 \end{itemize}
 
 Besides photogrammetry, another option that was considered for generating the models was laser scanning.
-This was not a viable option because of the price~--~products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) to possibly improve the image quality cost upwards of $400$\$ dollars.
+This was not a viable option because of the price~--~products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) cost upwards of $400$\$ dollars, which is non-trivial considering only a potential quality improvement.
+
 However, since a number of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be combined with laser scanning in the future with only minor changes and a reasonable quality improvement, namely with more problematic holds (see section \ref{sec:dual}).
 
 \section{Creating the wall model}
 The wall model (figure \ref{fig:model}) has been created semi-automatically.
 
 First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
-This model was then manually edited in Blender 3D to remove possible modelling errors.
-Since the wall consists only of straight segments connected together, this can be done relatively easily.
-After manual changes, the resulting model was reimported to Metashape to generate the texture from the photos.
+This model was then manually edited in Blender 3D to remove modelling errors -- since the wall consists only of straight segments, this was done relatively easily.
+After manual changes, the resulting model was reimported to Metashape to be textured.
 
-\begin{figure}[H]
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=\columnwidth]{images/wall/image.png}
 	\caption{The model of the Smíchoff wall, created using Metashape and Blender.}
@@ -39,9 +39,9 @@ Since a regular climbing wall contains hundreds or even thousands of holds of va
 It is important to automate as many steps as possible so that the amount of manual work done is minimized.
 
 This has been accomplished using a turntable-based workflow, upon which the holds are placed and scanned.
-The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing) to generate the model.
+The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing).
 
-The resulting workflow can process a single hold in \SI{40}{\second} of scanning (taking $12$ photos and varying depending on the lighting conditions) and additional $4$ minutes of processing.
+The resulting workflow can model a single hold in \SI{40}{\second} of scanning (varying depending on the lighting conditions and the number of photos, the default being $12$) and additional $4$ minutes of processing.
 
 \subsection{Turntable design}
 A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
@@ -55,8 +55,8 @@ The communication with the Arduino is implemented via the serial port.
 	\label{fig:wiring}
 \end{figure}
 
-To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 directly in the middle).
-Additionally, gears mounted to the motors turn the top of the turntable, achieving a 90:12 reduction.
+To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 placed in the middle).
+Additionally, gears mounted to the motors turn the top of the turntable, achieving a $90/12 = 7.5$ reduction.
 This allows the turntable to handle objects of weight up to \SI{8}{\kilo\gram}, with heavier objects requiring manual turning.
 
 \begin{figure}
@@ -87,10 +87,11 @@ The top area is connected to a plexiglass with a marked center and 4 markers.
 
 \subsection{Environment setup}
 Two LED lights, mounted on adjustable stands and covered with baking paper (for light diffusion) were used to achieve good lighting conditions.
-A large black cloth was used as a background around the turntable to minimize the number of unwanted image features (see figure \ref{fig:setup}).
+A large black cloth was used as the background to minimize the number of unwanted image features (see figure \ref{fig:setup}).
 
 Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
 This meant that the exposure time was usually around \SI{1.5}{\second}.
+The increased f-stop widens the focal plane, which makes the entire scanned object in focus and improves model quality.
 
 The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
 Additionally, all of the setup components (including the turntable, excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
@@ -104,27 +105,26 @@ Additionally, all of the setup components (including the turntable, excluding th
 \end{figure}
 
 \subsection{Dual texture holds}\label{sec:dual}
-Glossy surfaces are one of the most problematic types surfaces for photogrammetry, since the angle under which they are imaged change their appearance due to light reflecting into the camera.
-This poses a problem for „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
-They are increasingly used in modern bouldering and sports climbing, because they give setters more freedom in creating difficult routes.
+Glossy surfaces are a problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
+This problem is realized in „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
 
 A standard way of dealing with glossy surfaces is to cover them in something that is mate.
-While this does solve the problem of model generation, it ruins the texture, because the mate solution is usually opaque (and possibly requiring another set of images for texturing).
+While this does solve the problem of model generation, it ruins the texture, because the mate solution is usually opaque, thus requiring another set of images for texturing.
 
-In our case, however, the solution is rather obvious -- cover them in climbing chalk (figure \ref{fig:chalk}).
+In our case, however, the solution is pretty straightforward -- cover them in climbing chalk (figure \ref{fig:chalk}).
 Since it is mate, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
 Additionally, since climbing chalk will be applied to the holds by climber during regular usage anyway, there is no need to obtain more images for texturing.
 
 It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
 In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
 
-The quality could be further improved by using laser scanning, which handles glossy surfaces better than using only images.
+The quality could be further improved by using laser scanning, which handles glossy surfaces better than using images only.
 
-\begin{figure}[H]
+\begin{figure}[t]
 	\centering
 	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
 	\hfill
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/2.png} }}%
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/4.png} }}%
 	\hfill
 	\subfloat{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
 	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
@@ -132,8 +132,9 @@ The quality could be further improved by using laser scanning, which handles glo
 \end{figure}
 
 \subsection{Hold metadata}
-After all models have been generated, a metadata file is created for all successfully generated ones.
-The specification is as follows:
+After all models have been generated, a \verb|yaml| metadata file is created for storing their properties.
+It is a dictionary, with keys being the hold models and the attributes their properties.
+The specification of a single item is as follows:
 
 \begin{minted}{yaml}
 <the first 12 characters of the sha256sum of model data>:
@@ -146,7 +147,8 @@ The specification is as follows:
 \end{minted}
 
 All of the specified attributes are optional.
-The first 12 characters of the hashsum were chosen for readability, and because tests for collisions on random data showed that tens of thousands of holds would be required for a reasonable chance of collision.
+Some of them (like volume and date) are automatically inferred, while others have to be added manually.
+The first 12 characters of the hashsum were chosen for readability, and because millions of holds would be required for a reasonable chance of collision\footnote{Since there are 16 symbols, the total pool of hashes is $N = 16^{12}$. We'll take $n = 10\ 000$ as the maximum number of holds. The chance of collision is inverse to there not being one in the first $n$ holds, which can be calculated as $1 - \prod_{i = 1}^{n} \frac{N - i}{N} \approx 1.77 \cdot 10^{-7}$}.
 
 \section{Editor implementation}
 The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
@@ -155,16 +157,18 @@ While other options exist, such as Unreal Engine and Godot, Unity was chosen due
 Using this ecosystem, a number of freely available packages were used (with minor code modifications), namely
 
 \begin{itemize}
-	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator (for hold outlines),
+	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator,
 	\item \textbf{Runtime OBJ Importer} \cite{objimport} -- an \verb|.obj| file importer and
 	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
 \end{itemize}
 
-The editor code is cross-platform and can be build on Mac, Windows and Linux, with the newest builds being freely available on the project GitHub page.
+The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest versions being available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
 
 \subsection{Movement}
 Movement is implemented using keyboard in a way commonly used in 3D programs.
 The arrow or \verb|WSAD| keys provide left, right, forward and backward movement, while the \verb|Space| and \verb|Shift| keys allow flying up and down.
+
+Physics and gravity are also implemented, with the character being pulled to the ground when not flying, and colliding with both the wall and the holds.
 
 \subsection{Wall and hold format}
 For the editor to correctly load the scene, it expects the wall and holds to be in the \verb|obj| file format, possibly with a \verb|mtl| file and a bitmap texture.
@@ -184,7 +188,7 @@ Zones: ["1", "2", "3", "4", "5"]
 
 \subsection{Modes}
 The editor contains three modes in which can operate, with the current mode being always displayed in the top right.
-While this might seem like an implementation detail, it is arguably important for user documentation and general usage, because the user always knows which state the editor.
+While this might seem like an implementation detail, it is important for user documentation and general usage, because the user always knows which state the editor is in.
 An obvious inspiration is the Vim text editor, which makes the mode distinction similarly apparent.
 
 The modes are the following:
@@ -212,8 +216,7 @@ This makes it easy to be used in other applications (both for viewing and modifi
 Here is how the format looks like:
 
 \begin{minted}{yaml}
-# Cled version (for future compatibility reasons)
-Version: 1.0
+Version: 1.0 # Editor version (for future compatibility reasons)
 
 Player:
   Light: false # whether the player's light is on
@@ -226,12 +229,10 @@ Player:
     y: 123.996086
   Flying: false # whether the player is currently flying
 
-# path to the wall and the holds
 WallModelPath: /home/tom/Wall/wall.obj
 HoldModelsPath: /home/tom/Holds
 
-# a dictionary of hold instances
-Holds:
+Holds: # a dictionary of hold instances
   f21cde933ad9: # a unique ID for the hold instance
     BlueprintId: 4bdff2704462 # an ID of the hold model
     State:
@@ -257,13 +258,12 @@ Holds:
         z: 0.657852829
       Rotation: 1.21387374
 
-# a list of hold routes
-Routes:
+Routes: # a list of hold routes
 - Name: A very nice route
   Grade: blue
   Zone: 3
   Setter: Danny
-  HoldIDs: # which holds the route contains
+  HoldIDs: # which hold instances the route contains
   - 0436ff53a1d8
   - f21cde933ad9
 
@@ -293,6 +293,6 @@ TODO: obrázek UI
 
 \subsection{Lighting}
 Since each wall has different lighting needs and specifying them in the wall metadata would be too impractical, the editor supports placing lights on the current player position (and removing them).
-This can be done either from the \verb|Lighting| section of the toolbar, or by using \verb|F| to toggle the player lighting and \verb|Ctrl+F| to place it.
+This can be done either from the \verb|Lighting| section of the toolbar, or by using \verb|F| to toggle the player lighting and \verb|Ctrl+F| to place one at the player position.
 
 TODO: obrázek UI
