@@ -199,9 +199,9 @@ The modes are the following:
 	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds, or modifying route parameters.
 \end{itemize}
 
-\subsection{Hold filtering}
-Quickly filtering which holds to place on the wall is crucial for effective virtual route setting, because it dictates the time the route setting takes.
-The editor contains a menu from which a subset of holds can be selected and cycled while editing, accessed via pressing either \verb|Tab| or \verb|Q|.
+\subsection{Hold selection}
+Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it dictates the time the route setting takes.
+The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and cycled while editing.
 
 Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
 By default, the currently filtered holds are also sorted first by their color, then by their type and finally by their volume.
@@ -267,11 +267,18 @@ Routes: # a list of hold routes
   - 0436ff53a1d8
   - f21cde933ad9
 
-# a general list of starting and ending holds
-StartingHoldIDs: ["f21cde933ad9"]
-EndingHoldIDs: ["0436ff53a1d8"]
+# a list of starting and ending holds
+StartingHoldIDs:
+- f21cde933ad9
+EndingHoldIDs:
+- 0436ff53a1d8
 
-# list of point lights around the wall
+# a list of the holds that are currently selected
+SelectedHoldBlueprintIDs:
+- f21cde933ad9
+- 0436ff53a1d8
+
+# a list of point lights around the wall
 Lights:
   Positions:
   - x: 3.71035504
