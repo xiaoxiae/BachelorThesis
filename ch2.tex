@@ -216,9 +216,9 @@ This makes it easy to be used in other applications (both for viewing and modifi
 Here is how the format looks like:
 
 \begin{minted}{yaml}
-Version: 1.0 # Editor version (for future compatibility reasons)
+Version: 1.0 # Editor version (for compatibility reasons)
 
-Player:
+Player: # player settings
   Light: false # whether the player's light is on
   Position: # the player position as a vector
     x: 4.66010237
@@ -258,7 +258,7 @@ Holds: # a dictionary of hold instances
         z: 0.657852829
       Rotation: 1.21387374
 
-Routes: # a list of hold routes
+Routes: # a list of routes
 - Name: A very nice route
   Grade: blue
   Zone: 3
@@ -267,19 +267,17 @@ Routes: # a list of hold routes
   - 0436ff53a1d8
   - f21cde933ad9
 
-# a list of starting and ending holds
-StartingHoldIDs:
+StartingHoldIDs: # a list of starting holds
 - f21cde933ad9
-EndingHoldIDs:
+
+EndingHoldIDs: # a list of ending holds
 - 0436ff53a1d8
 
-# a list of the holds that are currently selected
-SelectedHoldBlueprintIDs:
+SelectedHoldBlueprintIDs: # a list of currently selected holds
 - f21cde933ad9
 - 0436ff53a1d8
 
-# a list of point lights around the wall
-Lights:
+Lights: # a list of point lights around the wall
   Positions:
   - x: 3.71035504
     y: 3.53241396
@@ -290,8 +288,7 @@ Lights:
   Intensity: 0.2 # how strong they are
   ShadowStrength: 0.2 # how hard their shadows are
 
-# the image capture settings
-CaptureSettings:
+CaptureSettings: # image capture settings
   ImagePath: /home/tom/Pictures # captured images path
   ImageSupersize: 2 # captured images resolution scaling
 \end{minted}
