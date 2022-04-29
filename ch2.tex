@@ -10,12 +10,12 @@ Each of the respective parts are open-source projects on GitHub, licensed under 
 Agisoft Metashape was used for 3D model generation.
 While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
 \begin{itemize}
-	\item It created the highest quality models out of the tested programs, given a representative sample of the hold images.
-	\item It includes a well-documented Python API, along with good GUI.
+	\item It created the highest quality models out of the tested programs, given a representative sample\footnote{A foothold, a few regular holds and a dual texture hold, testing with 9, 12 and 15 images.} of the hold images.
+	\item It includes a well-documented Python API, along with a good GUI.
 \end{itemize}
 
 Besides photogrammetry, another option that was considered for generating the models was laser scanning.
-This was not a viable option because of the price~--~products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) cost upwards of $400$\$ dollars, which is non-trivial considering only a potential quality improvement.
+This was not a viable option because of the price, because products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) cost upwards of $400$\$ dollars, which is non-trivial considering only a potential quality improvement.
 
 However, since a number of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be combined with laser scanning in the future with only minor changes and a reasonable quality improvement, namely with more problematic holds (see section \ref{sec:dual}).
 
@@ -41,7 +41,7 @@ It is important to automate as many steps as possible so that the amount of manu
 This has been accomplished using a turntable-based workflow, upon which the holds are placed and scanned.
 The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing).
 
-The resulting workflow can model a single hold in \SI{40}{\second} of scanning (varying depending on the lighting conditions and the number of photos, the default being $12$) and additional $4$ minutes of processing.
+The resulting workflow can model a single hold in 40 seconds of scanning (varying depending on the lighting conditions and the number of photos, the default being $12$) and additional $4$ minutes of processing.
 
 \subsection{Turntable design}
 A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
@@ -91,10 +91,10 @@ A large black cloth was used as the background to minimize the number of unwante
 
 Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
 This meant that the exposure time was usually around \SI{1.5}{\second}.
-The increased f-stop widens the focal plane, which makes the entire scanned object in focus and improves model quality.
+The f-stop was maximized to widen the focal plane, which puts the entire scanned object into focus and thus improves model quality.
 
 The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
-Additionally, all of the setup components (including the turntable, excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
+Additionally, all of the setup components (excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
 
 \begin{figure}
 	\centering
@@ -148,7 +148,7 @@ The specification of a single item is as follows:
 
 All of the specified attributes are optional.
 Some of them (like volume and date) are automatically inferred, while others have to be added manually.
-The first 12 characters of the hashsum were chosen for readability, and because millions of holds would be required for a reasonable chance of collision\footnote{Since there are 16 symbols, the total pool of hashes is $N = 16^{12}$. We'll take $n = 10\ 000$ as the maximum number of holds. The chance of collision is inverse to there not being one in the first $n$ holds, which can be calculated as $1 - \prod_{i = 1}^{n} \frac{N - i}{N} \approx 1.77 \cdot 10^{-7}$}.
+The first 12 characters of the hashsum were chosen for readability purposes and because millions of holds would be required for a reasonable chance of collision\footnote{Since there are 16 symbols, the total pool of hashes is $N = 16^{12}$. We'll take $n = 10\ 000$ as the maximum number of holds. The chance of collision is inverse to there not being one in the first $n$ holds, which can be calculated as $1 - \prod_{i = 1}^{n} \frac{N - i}{N} \approx 1.77 \cdot 10^{-7}$, which is more than reasonable.}.
 
 \section{Editor implementation}
 The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
