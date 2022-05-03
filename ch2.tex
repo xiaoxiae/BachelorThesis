@@ -104,6 +104,32 @@ Additionally, all of the setup components (excluding the camera) can be purchase
 	\label{fig:setup}
 \end{figure}
 
+\subsection{Image masking}
+The photogrammetry software expects the images to be viewed from various angles, as outlined in section \ref{sec:theory}.
+This poses a problem for the turntable setup, since the background might not be perfectly dark and thus create undesired feature points that make it harder to reconstruct the model.
+Fortunately, the contrast between the top of the turntable and the background is large enough to automatically construct a mask to filter the background out.
+This is done using the OpenCV library (as seen in figure \ref{fig:mask}) by
+\begin{enumerate}
+	\item converting the image to grayscale,
+	\item generating a binary image using a threshold on the pixel brightness,
+	\item applying a contour-generating algorithm \cite{suzuki1985topological} on the image and finally
+	\item using the largest (flood-filled) contour as the image mask.
+\end{enumerate}
+
+\begin{figure}
+	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
+	\centering
+	\subfloat[\centering Original photo.]{{\includegraphics[height=2.0cm]{images/masking/hold.png} }}%
+	\hfill
+	\subfloat[\centering Hold contours.]{{\includegraphics[height=2.0cm]{images/masking/contourimage.jpg} }}%
+	\hfill
+	\subfloat[\centering Generated mask.]{{\includegraphics[height=2.0cm]{images/masking/mask.jpg} }}%
+	\hfill
+	\subfloat[\centering Resulting photo.]{{\includegraphics[height=2.0cm]{images/masking/resulting.jpg} }}%
+	\caption{The process of creating the masked image of a hold.}%
+	\label{fig:mask}
+\end{figure}
+
 \subsection{Dual texture holds}\label{sec:dual}
 Glossy surfaces are a problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
 This problem is realized in „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
