@@ -144,8 +144,6 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
 In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
 
-The quality could be further improved by using laser scanning, which handles glossy surfaces better than using images only.
-
 \begin{figure}[t]
 	\centering
 	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
@@ -188,7 +186,9 @@ Using this ecosystem, a number of freely available packages were used (with mino
 	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
 \end{itemize}
 
-The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest versions being available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
+The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases (along with their changelog) being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
+Each release is automatically built from the source code using GitHub Actions on tagged commits.
+The version numbering scheme follows Semantic Versioning 2.0.
 
 \subsection{Movement}
 Movement is implemented using keyboard in a way commonly used in 3D programs.
