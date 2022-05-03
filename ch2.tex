@@ -126,7 +126,7 @@ This is done using the OpenCV library (as seen in figure \ref{fig:mask}) by
 	\subfloat[\centering Generated mask.]{{\includegraphics[height=2.0cm]{images/masking/mask.jpg} }}%
 	\hfill
 	\subfloat[\centering Resulting photo.]{{\includegraphics[height=2.0cm]{images/masking/resulting.jpg} }}%
-	\caption{The process of creating the masked image of a hold.}%
+	\caption{The process of masking a hold, generated using OpenCV.}%
 	\label{fig:mask}
 \end{figure}
 
@@ -144,7 +144,7 @@ Additionally, since climbing chalk will be applied to the holds by climber durin
 It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
 In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
 
-\begin{figure}[t]
+\begin{figure}[h]
 	\centering
 	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
 	\hfill
@@ -230,7 +230,7 @@ Quickly selecting which holds to place on the wall is crucial for effective virt
 The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and cycled while editing.
 
 Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
-By default, the currently filtered holds are also sorted first by their color, then by their type and finally by their volume.
+By default, the currently filtered holds are also sorted first by their color, then by their type, and finally by their volume.
 Additionally, hovering on each of the menu items rotates them around, which is useful when the static hold image isn't descriptive enough.
 
 TODO: obrázek UI
