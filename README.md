@@ -6,9 +6,6 @@ A workflow for creating 3D hold and wall models and the accompanying editor has 
 - [Clis](https://github.com/Climber-Tools/Clis) – efficient 3D scanning of climbing holds and climbing gym interiors.
 - [Cled](https://github.com/Climber-Tools/Cled) – a 3D editor designed for efficient virtual routesetting.
 
-## Downloading
-The up-to-date version of the thesis is available as an artifact in the `Actions` section.
-
 ## Building
 1. Type `make`.
 2. Press `enter`.
