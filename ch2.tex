@@ -239,7 +239,7 @@ This makes it easy to be used in other applications (both for viewing and modifi
 Here is how the format looks like:
 
 \begin{minted}{yaml}
-Version: 1.0 # Editor version (for compatibility reasons)
+Version: 2.1.0 # Editor version (for compatibility reasons)
 
 Player: # player settings
   Light: false # whether the player's light is on
@@ -263,11 +263,12 @@ Holds: # a dictionary of hold instances
         x: 1.20504105
         y: 0.378549755
         z: -7.67928696
-    Normal: # the normal of the hold, away from the wall
+      Normal: # the normal of the hold, away from the wall
         x: 0.994500279
         y: 0.0156783238
         z: 0.103554823
       Rotation: 0 # the hold rotation about the normal
+      Flipped: false # whether the hold is horizontally flipped
   0436ff53a1d8:
     BlueprintId: 4bdff2704462
     State:
@@ -280,6 +281,7 @@ Holds: # a dictionary of hold instances
         y: -0.0226488542
         z: 0.657852829
       Rotation: 1.21387374
+      Flipped: false
 
 Routes: # a list of routes
 - Name: A very nice route
