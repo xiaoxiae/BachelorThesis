@@ -1,194 +1,14 @@
-\chapter{Realization}\label{sec:realization}
+\chapter{Editor}\label{sec:editor}
+The editor should allow for visual route setting TODO what do we want
 
-The realization of the project can be separated into three distinct parts: \textbf{creating the wall model}, \textbf{creating hold models} and the \textbf{editor implementation}.
-Each of the respective parts are open-source projects on GitHub, licensed under GPLv3:
-\begin{itemize}
-	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/clis.svg}} -- the climber's scanner \cite{clis}
-	\item \raisebox{-0.08em}{\includesvg[height=0.85 \baselineskip]{images/cled.svg}} -- the climber's editor \cite{cled}
-\end{itemize}
+There are many frameworks that support 3D interactions, the two main groups being User interface software (Qt, GTK+, Electron, etc.) and Game engines (Unreal Engine, Godot, Source, Three.js, etc.).
+The choice was made to use a Game engine because the main functionality of the editor is moving around and interacting with objects in 3D, which Game engines are arguably more suited for.
 
-Agisoft Metashape was used for 3D model generation.
-While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
-\begin{itemize}
-	\item It created the highest quality models out of the tested programs, given a representative sample\footnote{A foothold, a few regular holds and a dual texture hold, testing with 9, 12 and 15 images.} of the hold images.
-	\item It includes a well-documented Python API, along with a good GUI.
-\end{itemize}
+Unity was chosen as the framework to implement the editor in, chosen mainly due to the author's experience with Unity and C\# in general, along with a large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
 
-Besides photogrammetry, another option that was considered for generating the models was laser scanning.
-This was not a viable option because of the price, because products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) cost upwards of $400$\$ dollars, which is non-trivial considering only a potential quality improvement.
+The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
 
-However, since a number of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be combined with laser scanning in the future with only minor changes and a reasonable quality improvement, namely with more problematic holds (see section \ref{sec:dual}).
-
-\section{Creating the wall model}
-The wall model (figure \ref{fig:model}) has been created semi-automatically.
-
-First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
-This model was then imported and edited in Blender 3D to remove inaccuracies.
-After the changes, the resulting model was reimported to Metashape to be textured and finally exported as the final model.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\columnwidth]{images/wall/image.png}
-	\caption{The model of the Smíchoff wall, created using Metashape and Blender.}
-	\label{fig:model}
-\end{figure}
-
-
-\section{Creating hold models}
-Since a regular climbing wall contains hundreds or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
-It is important to automate as many steps as possible so that the amount of manual work done is minimized.
-
-This has been accomplished using a turntable-based workflow, upon which the holds are placed and scanned.
-The turntable turns the hold around for a stationary camera to take photos, which are then fed into the Agisoft Metashape protogrammetry software (+ Blender for post-processing).
-
-The resulting workflow can model a single hold in 40 seconds of scanning (varying depending on the lighting conditions and the number of photos, the default being $12$) and additional $4$ minutes of processing.
-
-\subsection{Turntable design}
-A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
-An Arduino board and A4988 motor controllers are used for fine motor control (figure \ref{fig:wiring}).
-The communication with the Arduino is implemented via the serial port.
-
-\begin{figure}
-	\centering
-	\includesvg[width=\columnwidth]{images/wiring.svg}
-	\caption{The wiring diagram of the turntable, created using Fritzing.}
-	\label{fig:wiring}
-\end{figure}
-
-To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 placed in the middle).
-Additionally, gears mounted to the motors turn the top of the turntable, achieving a $90/12 = 7.5$ reduction.
-This allows the turntable to handle objects of weight up to \SI{8}{\kilo\gram}, with heavier objects requiring manual turning.
-
-\begin{figure}
-	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
-	\centering
-	\subfloat[\centering Top part.]{{\includegraphics[height=3.6cm]{images/turntable/top.png} }}%
-	\hfill
-	\subfloat[\centering Base part (side).]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
-	\hfill
-	\subfloat[\centering Base part (top).]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
-	\\
-	\qquad
-	\qquad
-	\subfloat[\centering Motor mount.]{{\includegraphics[height=2.6cm]{images/turntable/mount.png} }}%
-	\hfill
-	\subfloat[\centering Motor gear (side).]{{\includegraphics[height=2.6cm]{images/turntable/gear-side.png} }}%
-	\hfill
-	\subfloat[\centering Motor gear (top).]{{\includegraphics[height=2.6cm]{images/turntable/gear-top.png} }}%
-	\qquad
-	\qquad
-	\quad
-	\qquad
-	\caption{Parts of the model of the turntable, created using Fusion360.}%
-	\label{fig:turntable}
-\end{figure}
-
-The top area is connected to a plexiglass with a marked center and 4 markers.
-
-\subsection{Environment setup}
-Two LED lights, mounted on adjustable stands and covered with baking paper (for light diffusion) were used to achieve good lighting conditions.
-A large black cloth was used as the background to minimize the number of unwanted image features (see figure \ref{fig:setup}).
-
-Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
-This meant that the exposure time was usually around \SI{1.5}{\second}.
-The f-stop was maximized to widen the focal plane, which puts the entire scanned object into focus and thus improves model quality.
-
-The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
-Additionally, all of the setup components (excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\columnwidth]{images/setup/setup.png}
-	\caption{An image of the setup during scanning, including the taken image. f-stop: 22, focal length: \SI{38}{\milli\meter}, ISO: 320, exposure time: \SI{1}{\second}.}
-	  
-	\label{fig:setup}
-\end{figure}
-
-\subsection{Image masking}
-The photogrammetry software expects the images to be viewed from various angles, as outlined in section \ref{sec:theory}.
-This poses a problem for the turntable setup, since the background might not be perfectly dark and thus create undesired feature points that make it harder to reconstruct the model.
-Fortunately, the contrast between the top of the turntable and the background is large enough to automatically construct a mask to filter the background out.
-This is done using the OpenCV library (as seen in figure \ref{fig:mask}) by
-\begin{enumerate}
-	\item converting the image to grayscale,
-	\item generating a binary image using a threshold on the pixel brightness,
-	\item applying a contour-generating algorithm \cite{suzuki1985topological} on the image and finally
-	\item using the largest (flood-filled) contour as the image mask.
-\end{enumerate}
-
-\begin{figure}
-	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
-	\centering
-	\subfloat[\centering Original photo.]{{\includegraphics[height=2.0cm]{images/masking/hold.png} }}%
-	\hfill
-	\subfloat[\centering Hold contours.]{{\includegraphics[height=2.0cm]{images/masking/contourimage.jpg} }}%
-	\hfill
-	\subfloat[\centering Generated mask.]{{\includegraphics[height=2.0cm]{images/masking/mask.jpg} }}%
-	\hfill
-	\subfloat[\centering Resulting photo.]{{\includegraphics[height=2.0cm]{images/masking/resulting.jpg} }}%
-	\caption{The process of masking a hold, generated using OpenCV.}%
-	\label{fig:mask}
-\end{figure}
-
-\subsection{Dual texture holds}\label{sec:dual}
-Glossy surfaces are a problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
-This problem is realized in „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
-
-A standard way of dealing with glossy surfaces is to cover them in something that is mate.
-While this does solve the problem of model generation, it ruins the texture, because the mate solution is usually opaque, thus requiring another set of images for texturing.
-
-In our case, however, the solution is pretty straightforward -- cover them in climbing chalk (figure \ref{fig:chalk}).
-Since it is mate, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
-Additionally, since climbing chalk will be applied to the holds by climber during regular usage anyway, there is no need to obtain more images for texturing.
-
-It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
-In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
-
-\begin{figure}[h]
-	\centering
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
-	\hfill
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/4.png} }}%
-	\hfill
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
-	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
-	\label{fig:chalk}
-\end{figure}
-
-\subsection{Hold metadata}
-After all models have been generated, a \verb|yaml| metadata file is created for storing their properties.
-It is a dictionary, with keys being the hold models and the attributes their properties.
-The specification of a single item is as follows:
-
-\begin{minted}{yaml}
-<the first 12 characters of the sha256sum of model data>:
-  color: [<name>, <hex value>]                 # strings
-  type: <the type of hold>                     # string
-  manufacturer: <the name of the manufacturer> # string
-  labels: [<list>, <of>, <custom>, <labels>]   # strings
-  volume: <a float volume of the hold>         # float
-  date: <the date the hold model was created>  # datetime
-\end{minted}
-
-All of the specified attributes are optional.
-Some of them (like volume and date) are automatically inferred, while others have to be added manually.
-The first 12 characters of the hashsum were chosen for readability purposes and because millions of holds would be required for a reasonable chance of collision\footnote{Since there are 16 symbols, the total pool of hashes is $N = 16^{12}$. We'll take $n = 10\ 000$ as the maximum number of holds. The chance of collision is inverse to there not being one in the first $n$ holds, which can be calculated as $1 - \prod_{i = 1}^{n} \frac{N - i}{N} \approx 1.77 \cdot 10^{-7}$, which is more than reasonable.}.
-
-\section{Editor implementation}
-The editor has been created using the Unity editor, with the majority of the codebase being written in C\#.
-While other options exist, such as Unreal Engine and Godot, Unity was chosen due to the author's experience with developing games using it, along with a large ecosystem of packages that could be used to simplify the implementation and allow for rapid prototyping.
-
-Using this ecosystem, a number of freely available packages were used (with minor code modifications), namely
-
-\begin{itemize}
-	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator,
-	\item \textbf{Runtime OBJ Importer} \cite{objimport} -- an \verb|.obj| file importer and
-	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
-\end{itemize}
-
-The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases (along with their changelog) being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
-Each release is automatically built from the source code using GitHub Actions on tagged commits.
-The version numbering scheme follows Semantic Versioning 2.0.
+\section{Functionality}
 
 \subsection{Movement}
 Movement is implemented using keyboard in a way commonly used in 3D programs.
@@ -202,18 +22,18 @@ It has specific requirements on naming and location of the files which differs s
 This is because the editor uses only a subset of the files generated from Clis along with a few that Clis doesn't generate.
 To make things easier, the editor contains a Python script to automatically import models from Clis and generate the missing files, which are preview images and preview videos.
 
-The wall can also contain a \verb|yaml| metadata file for wall-specific things, namely the route grades, the names of the setters and which zone the route is located in.
+The wall can also contain a \verb|yaml| metadata file for wall-specific things: the possible route grades, names of the setters and wall zones.
 This is to simplify editing route properties by selecting the right option from a dropdown, instead of having to manually type it in.
 Here is an example of one such file:
 
 \begin{minted}{yaml}
 Grades: ["black", "purple", "red", "salmon", "blue", "yellow"]
 Setters: ["Danny", "Bert"]
-Zones: ["1", "2", "3", "4", "5"]
+Zones: ["pool", "overhang", "comp"]
 \end{minted}
 
 \subsection{Editor modes}
-The editor contains three modes in which can operate, with the current mode being always displayed in the top right.
+The editor contains three modes in which it operates, with the current mode being always displayed in the top right.
 While this might seem like an implementation detail, it is important for user documentation and general usage, because the user always knows which state the editor is in.
 An obvious inspiration is the Vim text editor, which makes the mode distinction similarly apparent.
 
@@ -222,16 +42,25 @@ The modes are the following:
 \begin{itemize}
 	\item \textbf{NORMAL} -- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
 	\item \textbf{HOLDING} -- the mode in which the user is holding a specific hold and can place it, or switch to the next one from the selection.
-	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds, or modifying route parameters.
+	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
 \end{itemize}
 
 \subsection{Hold selection}
-Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it dictates the time the route setting takes.
-The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and cycled while editing.
+Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it determines the time the route setting takes.
+The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and cycled (using the mouse wheel) while editing.
 
-Filtering holds can be done by selecting a specific hold color, type, manufacturer, or custom hold label.
-By default, the currently filtered holds are also sorted first by their color, then by their type, and finally by their volume.
+Holds can be filtered their color, type, manufacturer, or their label.
+By default, the currently filtered holds are also sorted first by their color and then by their volume.
 Additionally, hovering on each of the menu items rotates them around, which is useful when the static hold image isn't descriptive enough.
+
+To make it further apparent which hold is currently held and which one is previous/next, the previous, current and next holds are displayed in the bottom of the screen.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{images/editor/picker.png}%
+	\caption{The hold picker UI with no filters applied on a sample dataset.}%
+	\label{fig:picker}
+\end{figure}
 
 \subsection{Import and Export}
 The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
@@ -239,7 +68,7 @@ This makes it easy to be used in other applications (both for viewing and modifi
 Here is how the format looks like:
 
 \begin{minted}{yaml}
-Version: 2.1.0 # Editor version (for compatibility reasons)
+Version: 2.3.0 # Editor version (for compatibility reasons)
 
 Player: # player settings
   Light: false # whether the player's light is on
@@ -284,10 +113,10 @@ Holds: # a dictionary of hold instances
       Flipped: false
 
 Routes: # a list of routes
-- Name: A very nice route
-  Grade: blue
-  Zone: 3
-  Setter: Danny
+- Name: The Nose
+  Grade: VI
+  Zone: El Capitan
+  Setter: Mother Nature
   HoldIDs: # which hold instances the route contains
   - 0436ff53a1d8
   - f21cde933ad9
@@ -318,10 +147,38 @@ CaptureSettings: # image capture settings
   ImageSupersize: 2 # captured images resolution scaling
 \end{minted}
 
+\subsection{Building routes}
+After holds have been placed on, they can be combined to form routes by right-clicking to select the hold and then \verb|Ctrl| + left/right clicking to add other holds of the route.
+Right-clicking an already selected route brings up the route settings menu (as seen in figure \ref{fig:routesettings}), from which various route attributes can be set.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{images/editor/settings.png}
+	\caption{Route settings for a sample route.}%
+	\label{fig:routesettings}
+\end{figure}
+
+In addition, a hold can be marked as the starting hold or the ending hold of a route by hovering it and pressing \verb|t| (top) or \verb|b| (bottom) respectively.
+The starting hold is denoted by a starting marker, as seen in figure \ref{ref:topbotmarkers}.
+This marker always moves to the bottom of the hold so it is visible, no matter the hold position and orientation.
+
+\begin{figure}[h]
+	\centering
+	\subfloat{{\includegraphics[height=3cm]{images/markers/1.png} }}%
+	\hfill
+	\subfloat{{\includegraphics[height=3cm]{images/markers/2.png} }}%
+	\hfill
+	\subfloat{{\includegraphics[height=3cm]{images/markers/3.png} }}%
+	\hfill
+	\subfloat{{\includegraphics[height=3cm]{images/markers/4.png} }}%
+	\caption{Marker positioning based on hold rotation.}%
+	\label{fig:topbotmarkers}
+\end{figure}
+
 \subsection{Capturing images}
 The editor contains functionality for capturing the current image of the wall.
 This can be done anywhere in the editor by either selecting the option from the toolbar, or by pressing \verb|Ctrl+P| (see figure \ref{fig:capture} for examples).
-The image is then saved to the default system „Pictures“ folder, unless configured otherwise in the settings.
+The image is then saved to the default system „Pictures“ folder, unless configured otherwise.
 
 \begin{figure}[h]
 	\centering
@@ -333,10 +190,84 @@ The image is then saved to the default system „Pictures“ folder, unless conf
 \end{figure}
 
 \subsection{Lighting}
-Since each wall has different lighting needs and specifying them in the wall metadata would be too impractical, the editor supports placing lights on the current player position (and removing them).
+Since each wall has different lighting needs and specifying them in the wall metadata would be too impractical, the editor supports placing lights on the current player position and removing them.
 This can be done either from the \verb|Lighting| section of the toolbar, or by using \verb|F| to toggle the player lighting and \verb|Ctrl+F| to place one at the player position.
 
-\subsection{Routesetter feedback}
-To test the editor implementation functionality, two of Smíchoff's routesetters were asked to provide feedback regarding the editor usage.
-The task was to construct the routes that they had built on the wall using the editor and an image for reference.
-A number of useful recommendations were implemented based on this feedback, such as (TODO: potkávám se s nimi ve čtvrtek).
+\section{Developer Documentation}\label{sec:progdoc}
+
+The project has been developed on Linux in Unity Editor 2021.2.19f, using Rider as the code editor of choice.
+All of the code (besides the freely used packages, which have their own licensing) is licensed under GPL-3.0, chosen for the availability of the source code for any and all derivatives.
+
+The following free packages were used:
+
+\begin{itemize}
+	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator,
+	\item \textbf{Runtime OBJ Importer} \cite{objimport} -- an \verb|.obj| file importer and
+	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
+\end{itemize}
+
+The new Unity UI package (UIElements) was used for creating the user interface.
+It uses structured UXML files to describe each respective UI part, which are styled using USS (Unity Style Sheets).
+It was chosen over the older, GameObject-oriented approach because it is more structured and scalable (no need to manually create game objects).
+
+Git is used for version control and is hosted on GitHub.
+Each release is automatically built from the source code using GitHub Actions on tagged commits.
+The version numbering scheme follows Semantic Versioning 2.0.
+
+\subsection{Building from source}
+To build the project from source, first clone the Cled repository \cite{cled}.
+Next, open the project either by adding it to Unity Hub, or by using the Unity Editor 2021.2.19f (other 2021.x versions will likely also work but weren't tested).
+Finally, build the project by pressing \verb|Ctrl+B|.
+
+To prepare the holds for the usage in the editor, run the \verb|ClisImporter.py| script, which will copy the necessary model files over to a new folder and also generate the preview images and videos to be displayed in the hold picker.
+
+\subsection{Project structure}
+The codebase can be broadly split into the following parts:
+
+\begin{itemize}
+	\item Controller classes:
+	\begin{itemize}
+		\item \verb|CameraController| -- controls the camera movement.
+		\item \verb|MovementController| -- controls the player movement
+		\item \verb|EditorController| -- controls interaction with holds.
+		\item \verb|UIKeyboardController| -- controls UI using the keyboard.
+	\end{itemize}
+	\item Manager classes:
+	\begin{itemize}
+		\item \verb|EditorModeManager| -- manages the current editor mode.
+		\item \verb|HighlightManager| -- manages hold highlighting.
+		\item \verb|HoldStateManager| -- manages the state of the holds.
+		\item \verb|LightManager| -- manages the wall lights.
+		\item \verb|RouteManager| -- manages routes.
+		\item \verb|Preferences| -- manages preferences.
+	\end{itemize}
+	\item UI classes:
+	\begin{itemize}
+		\item \verb|BottomBar| -- controls bottom bar.
+		\item \verb|HoldPickerMenu| -- controls hold picker menu.
+		\item \verb|LoadingScreenMenu| -- controls loading screen.
+		\item \verb|PauseMenu| -- controls the pausing.
+		\item \verb|PopupMenu| -- controls the popups.
+		\item \verb|RouteSettingsMenu| -- controls route settings menu.
+		\item \verb|RouteViewMenu| -- controls route view menu.
+		\item \verb|SettingsMenu| -- controls settings menu.
+		\item \verb|ToolbarMenu| -- controls the top toolbar.
+	\end{itemize}
+	\item Import and Export classes:
+	\begin{itemize}
+		\item \verb|Importer| -- facilitates importing state.
+		\item \verb|Exporter| -- facilitates exporting state.
+		\item \verb|HoldLoader| -- loads the holds.
+		\item \verb|WallLoader| -- loads the wall.
+	\end{itemize}
+	\item \verb|Utilities| -- random utility functions and classes.
+\end{itemize}
+
+The interactions of the user with the code are done either through one of the controller classes (mouse via \verb|CameraController|, movement keys via \verb|MovementController|, mouse and keyboard via \verb|EditorController|), or through the UI classes (mouse).
+
+The manager classes encapsulate objects that need to be managed, such as the holds, lights or routes.
+They don't depend on any other classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a route is selected).
+
+The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI (like the bottom bar that displays the previous/current/next selected hold) depend on others (hold picker that stores the selected holds).
+
+TODO: more stuff?

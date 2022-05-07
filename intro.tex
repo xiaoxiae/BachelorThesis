@@ -17,13 +17,14 @@ Their approach is simple -- take photos of the wall with the holds already on it
 This works really well for a one-time model generation, but becomes infeasible for a climbing gym that replaces boulders periodically, as the model would have to be regenerated each time, which takes a significant amount of time and specialized equipment for higher quality models.
 It is also difficult to individually highlight certain boulders and edit them if a change is made after the modelling.
 
-This thesis attempts to solve this problem by focusing on what actually changes from setting to setting -- the position of the holds on the wall.
+This thesis attempts to solve the problem by focusing on what actually changes from setting to setting -- the position of the holds on the wall.
 The repeated scanning of the holds and the wall adds redundancy, which could be removed by a program to edit the placements of the holds.
 This adds time initially, since models of the wall and the holds have to be created.
 However, it saves time after repeated settings and offers the aforementioned advantages, making it a viable option for commercial climbing gyms.
 
-A system for semi-automatic scanning of climbing holds has been developed to efficiently create large hold datasets, along with a workflow for modelling climbing wall interiors (Clis \cite{clis}).
-This data is then used in a virtual route editor that can be used to efficiently model the holds from real wall (Cled \cite{cled}).
+A system for semi-automatic scanning of climbing holds has been developed to efficiently create hold models, along with a workflow for modelling climbing wall interiors (\raisebox{-0.08em}{\includesvg[height=0.7 \baselineskip]{images/clis.svg}} -- the climber's scanner \cite{clis}).
+The generated data is then used in a virtual editor that can be used to efficiently model the routes (\raisebox{-0.08em}{\includesvg[height=0.7 \baselineskip]{images/cled.svg}} -- the climber's editor \cite{cled}).
 
-The theory behind the techniques used in the hold and wall generation are covered in section \ref{sec:theory}, while the realization of the project is discussed in section \ref{sec:realization}.
+The process and techniques behind the creation of the hold and wall models are described in section \ref{sec:scanner}.
+The functionality and implementation of the editor is covered in section \ref{sec:editor}.
 Appendices \ref{apx:clis} and \ref{apx:cled} provide a quickstart for the scanning and editing respectively.

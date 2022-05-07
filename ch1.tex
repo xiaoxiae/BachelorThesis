@@ -1,10 +1,23 @@
-\chapter{Theory}\label{sec:theory}
+\chapter{Scanner}\label{sec:scanner}
+TODO: why photogrammetry is used (why even take pictures?)
+TODO: what was the goal
+
+% Besides photogrammetry, another option that was considered for generating the models was laser scanning.
+% This was not a viable option because of the price, because products that could be used (such as Revopoint POP, XYZ 1.0 Pro or the Creality 3D Scanner) cost upwards of $400$\$ dollars, which is non-trivial considering only a potential quality improvement.
+% 
+% However, since a number of the aforementioned photogrammetry programs support laser scanning out of the box, the current approach could be combined with laser scanning in the future with only minor changes and a reasonable quality improvement, namely with more problematic holds (see section \ref{sec:dual}).
 
 \section{Feature-based photogrammetry}
 Broadly speaking, photogrammetry is the process of obtaining information about objects using images.
 Because the problem is difficult and involves a lot of steps and specialized algorithms, many open-source and proprietary programs have been developed to simplify this task.
 
-This thesis uses the Agisoft Metashape software due to its highly configurable Python API and quality of generated models, with alternatives being discussed in section \ref{sec:realization}.
+This thesis uses the Agisoft Metashape photogrammetry software.
+While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
+\begin{itemize}
+	\item It created the highest quality models out of the tested programs, given a representative sample\footnote{A foothold, a few regular holds and a dual texture hold, testing with 9, 12 and 15 images.} of the hold images.
+	\item It includes a well-documented Python API, along with a good GUI.
+\end{itemize}
+
 Since it is closed-source, there is no easy way to describe and cite the exact algorithms used.
 However, a forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost}, with addition to the license files for various open-source projects, outline the general methods used.
 
@@ -24,8 +37,8 @@ The following sections aim to cover each of these in part.
 \subsection{Feature extraction} \label{ch:fext}
 The image features are extracted using the Scale Invariant Feature Transform (SIFT) method described in \citet{lowe1999object,lowe2004distinctive}.
 Each of the features is a vector describing some properties of a pixel of the 2D image and should be invariant or partially invariant to linear and affine transformations, illuminance change and 3D transformations.
-To find such vectors, a Gaussian scale-space is used.
 
+To find such vectors, a Gaussian scale-space is used.
 Formally, a scale-space for a given 2D image $I(x, y)$ is defined as a function
 \begin{equation} L(x, y, \sigma) = G(x, y, \sigma) \times I(x, y) \end{equation}
 
@@ -52,6 +65,8 @@ To calculate the vectors for the selected pixels, the magnitude $M(x,y)$ and ori
 \end{align}
 
 For the vectors to be invariant to orientation and contrast changes, a canonical representation is calculated from their local image gradients.
+
+A note to be made is that SIFT can be utilised in other feature-matching problems such as stitching panoramas and finding objects in images (which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}).
 
 \subsection{Feature matching}
 Once the vectors in canonical representation have been calculated, the images are examined pairwise.
@@ -138,9 +153,85 @@ Additional steps can be taken to normalize certain properties of the images, suc
 	\caption{Final model of the sample object, generated using Agisoft Metashape.}%
 \end{figure}
 
-\section{Using markers}
-Since the model sizes need to correspond to the real world scale and position (in local coordinates), markers can placed around the scanned object and used for this purpose.
-Since their position in space is known (measured in advance), it can be used to infer the correct scale and position of the entire model.
+\section{Creating hold models}
+Since a regular climbing wall contains hundreds or even thousands of holds of varying sizes, it would be infeasible to model each of them manually.
+It is therefore important to automate as many steps as possible so that the amount of manual work done is minimized.
+
+One way to accomplish this is to construct a turntable that turns the hold, with a stationary camera taking the images from different angles.
+If both the turntable and the camera are programmable, the time spent doing manual work would only include replacing one hold with another when the scanning is finished.
+
+It would be unreasonable to expect the turntable to carry any hold, since larger structures can weight upwards of tens of kilograms and measure more than a meter.
+However, both the carry weight and size should still be maximized.
+Additionally, faster turntable rotation corresponds to quicker scanning and should thus also be maximized.
+
+\subsection{Turntable design}
+A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
+An Arduino board and A4988 motor controllers are used for fine motor control (figure \ref{fig:wiring}).
+The models, the code and a short construction tutorial are freely available at the Clis GitHub page \cite{clis}.
+
+Communication with the Arduino is implemented via the serial port.
+The protocol is simple -- the Arduino listens for a string on the serial port.
+After reading it, it interprets is as integer and turns the corresponding number of degrees.
+After the turn, it writes this number back to the serial port and again starts listening for another string.
+
+The \verb|gphoto2| library is used to control the camera.
+Its API can capture images, focus the camera and also interact with the file system.
+All of the images were taken using Nikon z50 and a Nikkor 18-55mm f/3.5-5.6 lens.
+
+\begin{figure}
+	\centering
+	\includesvg[width=\columnwidth]{images/wiring.svg}
+	\caption{The wiring diagram of the turntable, created using Fritzing.}
+	\label{fig:wiring}
+\end{figure}
+
+To minimize the amount of friction, the only points of contact between the top and bottom part are 7 bearings (6 placed in a circular pattern and 1 placed in the middle).
+Additionally, gears mounted to the motors turn the top of the turntable, achieving a $90/12 = 7.5$ reduction.
+This allows the turntable to handle objects of weight up to \SI{8}{\kilo\gram}, with heavier objects requiring manual turning.
+
+\begin{figure}
+	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
+	\centering
+	\subfloat[\centering Top part.]{{\includegraphics[height=3.6cm]{images/turntable/top.png} }}%
+	\hfill
+	\subfloat[\centering Base part (side).]{{\includegraphics[height=3.6cm]{images/turntable/side.png} }}%
+	\hfill
+	\subfloat[\centering Base part (top).]{{\includegraphics[height=3.6cm]{images/turntable/bottom.png} }}%
+	\\
+	\qquad
+	\qquad
+	\qquad
+	\subfloat[\centering Motor mount.]{{\includegraphics[height=2.6cm]{images/turntable/mount.png} }}%
+	\hfill
+	\subfloat[\centering Motor gear.]{{\includegraphics[height=2.6cm]{images/turntable/gear-top.png} }}%
+	\qquad
+	\qquad
+	\qquad
+	\caption{Parts of the model of the turntable, created using Fusion360.}%
+	\label{fig:turntable}
+\end{figure}
+
+\begin{figure}
+	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
+	\centering
+	\subfloat[\centering Bottom part (top).]{{\includegraphics[height=5.4cm]{images/realturntable/base1.png} }}%
+	\hfill
+	\subfloat[\centering Bottom part (side).]{{\includegraphics[height=5.4cm]{images/realturntable/base2.png} }}%
+	\\
+	\subfloat[\centering Top part (bottom).]{{\includegraphics[height=6.2cm]{images/realturntable/top2.png} }}%
+	\hfill
+	\subfloat[\centering Top part (top).]{{\includegraphics[height=6.2cm]{images/realturntable/top1.png} }}%
+	\caption{Parts of the model of the turntable, created using Fusion360.}%
+	\label{fig:turntable}
+\end{figure}
+
+The top area is connected to a $\SI{50}{\centi\meter} \times \SI{50}{\centi\meter}$ plexiglass with a marked center and 4 markers (to infer scale and position, see section \ref{sec:markersss}). This means that any hold that can fit on the plexiglass (and possibly extend beyond it, as long as it is not blocking the markers) can be scanned automatically.
+
+The resulting workflow can model a single hold in $1$ minute seconds of scanning (varying depending on the lighting conditions and the number of photos, the default being $12$) and additional $4$ minutes of processing.
+
+\subsection{Scale and position inference}\label{sec:markersss}
+The hold size and position needs to correspond to its real counterpart (in local coordinates).
+To do this automatically, markers are placed around it -- since their position in space is known (measured in advance), it can be used to infer the correct scale and position of the entire model.
 
 The type of the markers used in Metashape is based on \citet{schneider19913,borisPatent}.
 Each circular target contains an inner and outer circle, the inner being used for locating the marker in the images and the outer for encoding the marker data.
@@ -161,4 +252,108 @@ After the positions of the markers are determined in the 3D space (they are just
 	\centering
 	\includesvg[width=0.8\columnwidth]{images/targets.svg}
 	\caption{18th 14-bit marker (left) and the corresponding binary value (right). Grey denotes an opposing pair of $1$ bits, blue denotes the parity bit.}
+\end{figure}
+
+\subsection{Environment setup}
+Two LED lights, mounted on adjustable stands and covered with baking paper (for light diffusion) were used to achieve good lighting conditions.
+A large black cloth was used as the background to minimize the number of unwanted image features (see figure \ref{fig:setup}).
+
+Additionally, since the camera is static, 300 ISO and 22 f/s were used to maximize the image quality.
+This meant that the exposure time was usually around \SI{1.5}{\second}.
+The f-stop was maximized to widen the focal plane, which puts the entire scanned object into focus and thus improves model quality.
+
+The entire setup can be carried in a backpacking pack\footnote{Excluding the plexiglass, which is inflexible, and the camera, which is fragile.}, making it portable.
+Additionally, all of the setup components (excluding the camera) can be purchased for under $4000$ CZK (or $180$ USD), making it affordable.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{images/setup/setup.png}
+	\caption{An image of the setup during scanning, including the taken image. f-stop: 22, focal length: \SI{38}{\milli\meter}, ISO: 320, exposure time: \SI{1}{\second}.}
+	\label{fig:setup}
+\end{figure}
+
+\subsection{Image masking}
+The photogrammetry software expects the images to be viewed from various angles.
+This poses a problem for the turntable setup, since the background might not be perfectly dark and thus create undesired feature points that make it harder to reconstruct the model.
+Fortunately, the contrast between the scanned area and the background is large enough to automatically construct a mask to filter the background out.
+This is done using the OpenCV library (as seen in figure \ref{fig:mask}) by
+\begin{enumerate}
+	\item converting the image to grayscale,
+	\item generating a binary image using a threshold on the pixel brightness,
+	\item applying a contour-generating algorithm \cite{suzuki1985topological} on the image and finally
+	\item using the largest (flood-filled) contour as the image mask.
+\end{enumerate}
+
+\begin{figure}
+	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
+	\centering
+	\subfloat[\centering Original.]{{\includegraphics[height=1.65cm]{images/masking/hold-clean.png} }}%
+	\hfill
+	\subfloat[\centering Smudges.]{{\includegraphics[height=1.65cm]{images/masking/hold.png} }}%
+	\hfill
+	\subfloat[\centering Hold contours.]{{\includegraphics[height=1.65cm]{images/masking/contourimage.jpg} }}%
+	\hfill
+	\subfloat[\centering Mask.]{{\includegraphics[height=1.65cm]{images/masking/mask.jpg} }}%
+	\hfill
+	\subfloat[\centering Result.]{{\includegraphics[height=1.65cm]{images/masking/resulting.jpg} }}%
+	\caption{The process of masking a hold, generated using OpenCV. A number of smudges were added to the image to show resiliency towards errors.}%
+	\label{fig:mask}
+\end{figure}
+
+\subsection{Dual texture holds}\label{sec:dual}
+Glossy surfaces are a problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
+This problem is realized in „dual-texture“ holds which, as the name suggests, contain two textures -- a mate texture that is meant for the climber to hold (or step) onto, and the glossy texture which is usually not.
+
+A standard way of dealing with glossy surfaces is to cover them in something that is mate.
+While this does solve the problem of model generation, it ruins the texture, because the mate solution is usually opaque, thus requiring another set of images for texturing.
+
+In our case, however, the solution is pretty straightforward -- cover them in climbing chalk (figure \ref{fig:chalk}).
+Since it is mate, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
+Additionally, since climbing chalk will be applied to the holds by climber during regular usage anyway, there is no need to obtain more images for texturing.
+
+It is worth noting that this solution is not perfect -- since the chalk doesn't cover the hold entirely, some reflections persist and can introduce model inaccuracies.
+In such cases, manual modelling using Blender to reconstruct the missing hold parts is required.
+
+\begin{figure}[h]
+	\centering
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1.png} }}%
+	\hfill
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/4.png} }}%
+	\hfill
+	\subfloat{{\includegraphics[height=2.5cm]{images/holds/3.png} }}%
+	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
+	\label{fig:chalk}
+\end{figure}
+
+\subsection{Hold metadata}
+After all models have been generated, a \verb|yaml| metadata file is created for storing their properties.
+It is a dictionary, with keys being the hold models and the attributes their properties.
+The specification of a single item is as follows:
+
+\begin{minted}{yaml}
+<the first 12 characters of the sha256sum of model data>:
+  color: [<name>, <hex value>]                 # strings
+  type: <the type of hold>                     # string
+  manufacturer: <the name of the manufacturer> # string
+  labels: [<list>, <of>, <custom>, <labels>]   # strings
+  volume: <a float volume of the hold>         # float
+  date: <the date the hold model was created>  # datetime
+\end{minted}
+
+All of the specified attributes are optional.
+Some of them (like volume and date) are automatically inferred, while others have to be added manually.
+The first 12 characters of the hashsum were chosen for readability purposes and because millions of holds would be required for a reasonable chance of collision\footnote{This is a generalization of the birthday paradox. Total pool of hashes is $N = 16^{12}$. The number of items needed for the probability of collision being $\ge \frac{1}{2}$ can be calculated as the largest $r$ for which $\prod_{i = 1}^{r} \frac{N - r}{N} \ge \frac{1}{2}$ holds. Using an approximation $r = \left\lceil \sqrt{2N \ln 2} + 1 \right\rceil = 1177411$ \cite{brink2012probably}, which is likely more than enough.}.
+
+\section{Creating the wall model}
+The wall model (figure \ref{fig:model}) has been created semi-automatically.
+
+First, a set of 188 images was used by the Agisoft Metashape software to create a reference model.
+This model was then imported and edited in Blender 3D to remove inaccuracies.
+After the changes, the resulting model was reimported to Metashape to be textured and finally exported as the final model.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\columnwidth]{images/wall/image.png}
+	\caption{The model of the Smíchoff wall, created using Metashape and Blender.}
+	\label{fig:model}
 \end{figure}
