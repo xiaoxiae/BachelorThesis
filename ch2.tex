@@ -57,7 +57,7 @@ To make it further apparent which hold is currently held and which one is previo
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\linewidth]{images/editor/picker.png}%
+	\includegraphics[width=\linewidth]{images/editor/picker.jpg}%
 	\caption{The hold picker UI with no filters applied on a sample dataset.}%
 	\label{fig:picker}
 \end{figure}
@@ -153,7 +153,7 @@ Right-clicking an already selected route brings up the route settings menu (as s
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\linewidth]{images/editor/settings.png}
+	\includegraphics[width=\linewidth]{images/editor/settings.jpg}
 	\caption{Route settings for a sample route.}%
 	\label{fig:routesettings}
 \end{figure}
@@ -164,13 +164,13 @@ This marker always moves to the bottom of the hold so it is visible, no matter t
 
 \begin{figure}[h]
 	\centering
-	\subfloat{{\includegraphics[height=3cm]{images/markers/1.png} }}%
+	\subfloat{{\includegraphics[height=3cm]{images/markers/1.jpg} }}%
 	\hfill
-	\subfloat{{\includegraphics[height=3cm]{images/markers/2.png} }}%
+	\subfloat{{\includegraphics[height=3cm]{images/markers/2.jpg} }}%
 	\hfill
-	\subfloat{{\includegraphics[height=3cm]{images/markers/3.png} }}%
+	\subfloat{{\includegraphics[height=3cm]{images/markers/3.jpg} }}%
 	\hfill
-	\subfloat{{\includegraphics[height=3cm]{images/markers/4.png} }}%
+	\subfloat{{\includegraphics[height=3cm]{images/markers/4.jpg} }}%
 	\caption{Marker positioning based on hold rotation.}%
 	\label{fig:topbotmarkers}
 \end{figure}
@@ -182,9 +182,9 @@ The image is then saved to the default system „Pictures“ folder, unless conf
 
 \begin{figure}[h]
 	\centering
-	\subfloat{{\includegraphics[height=5cm]{images/editor/capture-1.png} }}%
+	\subfloat{{\includegraphics[height=5cm]{images/editor/capture-1.jpg} }}%
 	\hfill
-	\subfloat{{\includegraphics[height=5cm]{images/editor/capture-2.png} }}%
+	\subfloat{{\includegraphics[height=5cm]{images/editor/capture-2.jpg} }}%
 	\caption{Images generated using the editor capture functionality.}%
 	\label{fig:capture}
 \end{figure}
@@ -241,7 +241,7 @@ The codebase can be broadly split into the following parts:
 		\item \verb|RouteManager| -- manages routes.
 		\item \verb|Preferences| -- manages preferences.
 	\end{itemize}
-	\item UI classes:
+	\item User Interface classes:
 	\begin{itemize}
 		\item \verb|BottomBar| -- controls bottom bar.
 		\item \verb|HoldPickerMenu| -- controls hold picker menu.
@@ -263,11 +263,17 @@ The codebase can be broadly split into the following parts:
 	\item \verb|Utilities| -- random utility functions and classes.
 \end{itemize}
 
-The interactions of the user with the code are done either through one of the controller classes (mouse via \verb|CameraController|, movement keys via \verb|MovementController|, mouse and keyboard via \verb|EditorController|), or through the UI classes (mouse).
+\subsection{Class interactions}
 
-The manager classes encapsulate objects that need to be managed, such as the holds, lights or routes.
-They don't depend on any other classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a route is selected).
+The interactions of the user with the code are done either through one of the controller classes (movement, camera, hold interactions) or through the UI classes (toolbar, hold picker, popups, etc.).
 
-The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI (like the bottom bar that displays the previous/current/next selected hold) depend on others (hold picker that stores the selected holds).
+The manager classes encapsulate functionality that need to be managed, such as the holds, routes, lights and highlighted objects.
+They don't depend on any classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a route is selected).
 
-TODO: more stuff?
+The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI depend on others. 
+Examples include
+\begin{itemize}
+		\item \verb|BottomBar| displays the previous/current/next selected hold, which are stored in \verb|HoldPickerMenu|,
+		\item \verb|RouteViewMenu| relies on \verb|SettingsMenu|, because it shows it when one of its routes is double clicked and
+		\item \verb|ToolbarMenu| contains buttons to displays various other parts of the UI, such as \verb|SettingsMenu|, \verb|RouteViewMenu| and also \verb|HoldPickerMenu|.
+\end{itemize}
