@@ -3,6 +3,12 @@
 
 \input{metadata}
 
+\newcommand{\ignore}[1]{}
+
+% hack for properly dividing TOC (developer documentation was alone)
+\usepackage{tocloft}
+\setlength\cftparskip{0.06em}
+
 \usepackage[a-2u]{pdfx}
 
 \ifEN\else\usepackage[czech,shorthands=off]{babel}\fi

@@ -3,9 +3,13 @@
 \section{Setting up}
 First, download the lastest version from the \href{https://github.com/Climber-Tools/Cled/releases}{Releases page}.
 
-To use Cled, you need a wall and holds dataset. A dataset example, along with the specification, can be found in \verb|Models/Example|.
+To use Cled, you need a wall and holds dataset.
+A dataset example, along with the specification, can be found in \verb|Models/Example|.
 This dataset can then be imported to Cled either by \verb|File > New|, or by pressing
 \verb|Ctrl+N|.
+
+To generate your own dataset, use Clis \cite{clis} to generate the hold and wall models and then use \verb|Scripts/ClisImporter.py| to prepare them for usage.
+Note that you will likely need to install a number of Python packages~--~to do this, you can follow the Clis setup on the \verb|Scripts/requirement.txt| file (see appendix \ref{apx:clissetup}).
 
 \section{Key bindings}
 
@@ -61,7 +65,7 @@ wheel up/down & cycle filtered holds \\
 \bottomrule
 \end{tabular}
 
-\subsection{Images}
+\subsection{Capturing images}
 
 \begin{tabular}[]{@{}ll@{}}
 \toprule

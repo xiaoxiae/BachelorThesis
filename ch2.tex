@@ -1,7 +1,14 @@
 \chapter{Editor}\label{sec:editor}
-The editor should allow for visual route setting TODO what do we want
+There are a number of requirements on the editor functionality, namely that
+\begin{itemize}
+	\item the setting should be in 3D, visual, intuitive and efficient,
+	\item the import and export format should be simple and human-readable,
+	\item the code should be open-source,
+	\item it should be cross-platform for all major operating systems and
+	\item it should contain image capture functionality\ignore{ that should produce verisimilitudinous images, lmao}.
+\end{itemize}
 
-There are many frameworks that support 3D interactions, the two main groups being User interface software (Qt, GTK+, Electron, etc.) and Game engines (Unreal Engine, Godot, Source, Three.js, etc.).
+There are many frameworks that support 3D, the two main groups being User interface software (Qt, GTK+, Electron, etc.) and Game engines (Unreal Engine, Godot, Source, Three.js, etc.).
 The choice was made to use a Game engine because the main functionality of the editor is moving around and interacting with objects in 3D, which Game engines are arguably more suited for.
 
 Unity was chosen as the framework to implement the editor in, chosen mainly due to the author's experience with Unity and C\# in general, along with a large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
@@ -20,7 +27,7 @@ Physics and gravity are also implemented, with the character being pulled to the
 For the editor to correctly load the scene, it expects the wall and holds to be in the \verb|obj| file format, possibly with a \verb|mtl| file and a bitmap texture.
 It has specific requirements on naming and location of the files which differs slightly from Clis.
 This is because the editor uses only a subset of the files generated from Clis along with a few that Clis doesn't generate.
-To make things easier, the editor contains a Python script to automatically import models from Clis and generate the missing files, which are preview images and preview videos.
+To make things easier, the editor contains a Python script to automatically import models from Clis.
 
 The wall can also contain a \verb|yaml| metadata file for wall-specific things: the possible route grades, names of the setters and wall zones.
 This is to simplify editing route properties by selecting the right option from a dropdown, instead of having to manually type it in.
@@ -46,25 +53,25 @@ The modes are the following:
 \end{itemize}
 
 \subsection{Hold selection}
-Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it determines the time the route setting takes.
-The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and cycled (using the mouse wheel) while editing.
+Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it largely dictates time the route setting takes.
+The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and used while editing.
 
-Holds can be filtered their color, type, manufacturer, or their label.
+Holds can be filtered by their color, type, manufacturer, or custom labels.
 By default, the currently filtered holds are also sorted first by their color and then by their volume.
 Additionally, hovering on each of the menu items rotates them around, which is useful when the static hold image isn't descriptive enough.
 
-To make it further apparent which hold is currently held and which one is previous/next, the previous, current and next holds are displayed in the bottom of the screen.
+To make it further apparent which hold is currently held and which one is previous/next, all three are displayed at the bottom of the screen.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{images/editor/picker.jpg}%
-	\caption{The hold picker UI with no filters applied on a sample dataset.}%
+	\caption{The hold picker UI (no filters applied) on a sample dataset.}%
 	\label{fig:picker}
 \end{figure}
 
 \subsection{Import and Export}
 The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
-This makes it easy to be used in other applications (both for viewing and modification), since it is well readable and parseable.
+This makes usage in other applications easier (both for viewing and modification), since it is well readable and parseable.
 Here is how the format looks like:
 
 \begin{minted}{yaml}
@@ -148,10 +155,10 @@ CaptureSettings: # image capture settings
 \end{minted}
 
 \subsection{Building routes}
-After holds have been placed on, they can be combined to form routes by right-clicking to select the hold and then \verb|Ctrl| + left/right clicking to add other holds of the route.
-Right-clicking an already selected route brings up the route settings menu (as seen in figure \ref{fig:routesettings}), from which various route attributes can be set.
+After holds have been placed, they can be combined to form routes by right-clicking to select the hold and then \verb|Ctrl| + left/right clicking to add other holds of the route.
+Right-clicking an already selected route brings up the route settings menu, from which various route attributes can be set.
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{images/editor/settings.jpg}
 	\caption{Route settings for a sample route.}%
@@ -159,8 +166,8 @@ Right-clicking an already selected route brings up the route settings menu (as s
 \end{figure}
 
 In addition, a hold can be marked as the starting hold or the ending hold of a route by hovering it and pressing \verb|t| (top) or \verb|b| (bottom) respectively.
-The starting hold is denoted by a starting marker, as seen in figure \ref{ref:topbotmarkers}.
-This marker always moves to the bottom of the hold so it is visible, no matter the hold position and orientation.
+The hold is then denoted by a marker, as seen in figure \ref{ref:topbotmarkers}.
+This marker moves to the bottom of the hold so it is always visible, no matter the hold position and orientation.
 
 \begin{figure}[h]
 	\centering
@@ -172,13 +179,13 @@ This marker always moves to the bottom of the hold so it is visible, no matter t
 	\hfill
 	\subfloat{{\includegraphics[height=3cm]{images/markers/4.jpg} }}%
 	\caption{Marker positioning based on hold rotation.}%
-	\label{fig:topbotmarkers}
+	\label{ref:topbotmarkers}
 \end{figure}
 
 \subsection{Capturing images}
 The editor contains functionality for capturing the current image of the wall.
 This can be done anywhere in the editor by either selecting the option from the toolbar, or by pressing \verb|Ctrl+P| (see figure \ref{fig:capture} for examples).
-The image is then saved to the default system „Pictures“ folder, unless configured otherwise.
+The image is then saved to the default system "Pictures" folder, unless configured otherwise.
 
 \begin{figure}[h]
 	\centering
@@ -196,9 +203,9 @@ This can be done either from the \verb|Lighting| section of the toolbar, or by u
 \section{Developer Documentation}\label{sec:progdoc}
 
 The project has been developed on Linux in Unity Editor 2021.2.19f, using Rider as the code editor of choice.
-All of the code (besides the freely used packages, which have their own licensing) is licensed under GPL-3.0, chosen for the availability of the source code for any and all derivatives.
+All of the code (besides the freely used packages, which have their own licensing) is licensed under GPL-3.0, chosen for the perpetual availability of the source code for any and all derived works.
 
-The following free packages were used:
+In addition to the editor code, the following free packages were used:
 
 \begin{itemize}
 	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator,
@@ -207,19 +214,17 @@ The following free packages were used:
 \end{itemize}
 
 The new Unity UI package (UIElements) was used for creating the user interface.
-It uses structured UXML files to describe each respective UI part, which are styled using USS (Unity Style Sheets).
+It uses structured UXML (Unity XML) files to describe each respective UI part, which are styled using USS (Unity Style Sheets).
 It was chosen over the older, GameObject-oriented approach because it is more structured and scalable (no need to manually create game objects).
 
-Git is used for version control and is hosted on GitHub.
-Each release is automatically built from the source code using GitHub Actions on tagged commits.
-The version numbering scheme follows Semantic Versioning 2.0.
+Git is used for version control and is hosted on GitHub \cite{cled}.
+Each release is automatically built for all supported platforms from the source code using GitHub Actions on tagged commits.
+The version numbering scheme follows Semantic Versioning 2.0 \cite{semver}.
 
 \subsection{Building from source}
-To build the project from source, first clone the Cled repository \cite{cled}.
+To build the project from source, first clone the repository.
 Next, open the project either by adding it to Unity Hub, or by using the Unity Editor 2021.2.19f (other 2021.x versions will likely also work but weren't tested).
 Finally, build the project by pressing \verb|Ctrl+B|.
-
-To prepare the holds for the usage in the editor, run the \verb|ClisImporter.py| script, which will copy the necessary model files over to a new folder and also generate the preview images and videos to be displayed in the hold picker.
 
 \subsection{Project structure}
 The codebase can be broadly split into the following parts:
