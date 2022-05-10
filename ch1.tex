@@ -18,7 +18,7 @@ While there are other suitable photogrammetry programs such as Meshroom (free), 
 \end{itemize}
 
 Since it is closed-source, there is no easy way to describe and cite the exact algorithms used.
-However, a~forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost}, with addition of license files for various open-source projects included with Metashapes, give a~good overview of the general methods used.
+However, a~forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost}, with addition of license files for various open-source projects included with Metashape, give a~good overview of the general methods used.
 
 Starting with a~set of images and ending with a~textured model, the process can be split into the following parts:
 
@@ -26,7 +26,7 @@ Starting with a~set of images and ending with a~textured model, the process can 
 	\item \textbf{feature extraction:} for each image, find features that are stable under linear and affine transformations, viewpoint change and illumination
 	\item \textbf{feature matching:} find matching features across multiple images
 	\item \textbf{bundle adjustment:} find the approximate positions of the camera and the matched features (obtaining ``structure from motion'' data)
-	\item \textbf{dense pointcloud generation:} obtain additional features (along with their normals) for higher model quality
+	\item \textbf{dense point cloud generation:} obtain additional features (along with their normals) for higher model quality
 	\item \textbf{surface reconstruction:} reconstruct the surface of the model
 	\item \textbf{texturing:} map a~texture from the images onto the model
 \end{enumerate}
@@ -68,7 +68,7 @@ It is a more general version of the $\mathrm{atan(y/x)}$ function, which doesn't
 
 For the vectors to be invariant to orientation and contrast changes, a~canonical representation is calculated from their local image gradients.
 
-A note to be made is that SIFT can be utilised in other feature-matching problems such as stitching panoramas and finding objects in images, which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}.
+A note to be made is that SIFT can be utilized in other feature-matching problems such as stitching panoramas and finding objects in images, which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}.
 
 \subsection{Feature matching}
 Once the canonical representations of the vectors have been calculated, the images are examined pairwise.
@@ -83,7 +83,7 @@ It internally uses a~$k$-d tree to partition the space into bins of the feature 
 After the features have been determined and matched across the images, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
 This is referred to as the bundle adjustment problem \cite{triggs1999bundle}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
 
-Formally, we can model the scene by $n$ vectors of 3D points $\mathbf{X}_{i \in [n]}$ (sometimes called a~sparse pointcloud), taken from $m$ cameras with parameters (position, focal length, etc.) given by vectors $\mathbf{P}_{j \in [m]}$.
+Formally, we can model the scene by $n$ vectors of 3D points $\mathbf{X}_{i \in [n]}$ (sometimes called a~sparse point cloud), taken from $m$ cameras with parameters (position, focal length, etc.) given by vectors $\mathbf{P}_{j \in [m]}$.
 The features can then be seen as observations $\overline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
 
 Let's now assume that we have a~function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that, given the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, models the calculated observation position $\mathbf{x}_{i, j}$.
@@ -93,13 +93,13 @@ where each $W_i$ is a~symmetric positive definite matrix indicating the weight o
 
 \begin{figure}[h]
 	\centering
-	\subfloat[Sparse pointcloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/sparse.png} }}%
+	\subfloat[Sparse point cloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/sparse.png} }}%
 	\hfill
-	\subfloat[Dense pointcloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/dense.png} }}%
-	\caption{Sparse and dense pointcloud comparison on a~sample object, generated using Agisoft Metashape.}%
+	\subfloat[Dense point cloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/dense.png} }}%
+	\caption{Sparse and dense point cloud comparison on a~sample object, generated using Agisoft Metashape.}%
 \end{figure}
 
-\subsection{Dense pointcloud generation}
+\subsection{Dense point cloud generation}
 Since the feature matching step generates a~small number of features compared to what should be used to generate a~``high-quality'' mesh, additional feature points have to be generated.
 The approach is based on generating depth-maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
 
@@ -261,8 +261,8 @@ To achieve this, the following settings were used on all of the images:
 \begin{itemize}
 	\item resolution: $5600 \times 3728$
 	\item ISO sensitivity: 320 --- lower sensitivity generally means less image noise
-	\item aperature: 22 --- higher aperature widens the focal plane, which results in the entire scanned object being in focus and thus reducing blur
-	\item exposure time: apx. $\SI{1.5}{\second}$ --- calculated from the sensitivity and the aperature for the image to have the correct contrast
+	\item aperture: 22 --- higher aperture widens the focal plane, which results in the entire scanned object being in focus and thus reducing blur
+	\item exposure time: apx. $\SI{1.5}{\second}$ --- calculated from the sensitivity and the aperture for the image to have the correct contrast
 \end{itemize}
 
 The settings only be used since the camera is static and the hold doesn't move while taking the image, otherwise the exposure time would be too high.
