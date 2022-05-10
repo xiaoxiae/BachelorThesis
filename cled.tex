@@ -3,25 +3,25 @@
 \section{Setting up}
 First, download the lastest version from the \href{https://github.com/Climber-Tools/Cled/releases}{Releases page}.
 
-To use Cled, you need a wall and holds dataset.
+To use Cled, you need a~wall and holds dataset.
 A dataset example, along with the specification, can be found in \verb|Models/Example|.
 This dataset can then be imported to Cled either by \verb|File > New|, or by pressing
 \verb|Ctrl+N|.
 
 To generate your own dataset, use Clis \cite{clis} to generate the hold and wall models and then use \verb|Scripts/ClisImporter.py| to prepare them for usage.
-Note that you will likely need to install a number of Python packages~--~to do this, you can follow the Clis setup on the \verb|Scripts/requirement.txt| file (see appendix \ref{apx:clissetup}).
+Note that you will likely need to install a~number of Python packages~--~to do this, you can follow the Clis setup on the \verb|Scripts/requirement.txt| file (see appendix \ref{apx:clissetup}).
 
 \section{Key bindings}
 
-While most of the controls are accessible via the UI, here is a comprehensive list of key bindings for efficiently controlling the editor:
+While most of the controls are accessible via the UI, here is a~comprehensive list of key bindings for efficiently controlling the editor:
 
 \subsection{Movement}
 
 \begin{tabular}[]{@{}ll@{}}
 \toprule
-\verb|WSAD| & move forward/backward/left/right \\
-\verb|space| & fly upward \\
-\verb|shift| & fly downward \\
+\verb|WSAD| & move \verb|↑/↓/←/→| \\
+\verb|Space| & fly upward \\
+\verb|Shift| & fly downward \\
 \bottomrule
 \end{tabular}
 
@@ -47,8 +47,7 @@ right button & select the hovered route \\
 \verb|Ctrl+R| or \verb|Ctrl+Delete| & delete hovered route/route of held hold \\
 middle button (EDITING) + mouse & rotate held hold \\
 \verb|T|/\verb|B| & toggle hovered hold as ending/starting \\
-control + left click (ROUTE) & toggle hovered hold as being in the
-route \\
+\verb|Ctrl| + click (ROUTE) & toggle hovered hold as being in the route \\
 wheel up/down & cycle filtered holds \\
 \bottomrule
 \end{tabular}

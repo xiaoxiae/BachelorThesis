@@ -1,5 +1,5 @@
 \chapter{Editor}\label{sec:editor}
-There are a number of requirements on the editor functionality, namely that
+There are a~number of requirements on the editor functionality, namely that
 \begin{itemize}
 	\item the setting should be in 3D, visual, intuitive and efficient,
 	\item the import and export format should be simple and human-readable,
@@ -8,29 +8,29 @@ There are a number of requirements on the editor functionality, namely that
 	\item it should contain image capture functionality\ignore{ that should produce verisimilitudinous images, lmao}.
 \end{itemize}
 
-There are many frameworks that support 3D, the two main groups being User interface software (Qt, GTK+, Electron, etc.) and Game engines (Unreal Engine, Godot, Source, Three.js, etc.).
-The choice was made to use a Game engine because the main functionality of the editor is moving around and interacting with objects in 3D, which Game engines are arguably more suited for.
+There are many frameworks that support 3D, the two main groups being user interface software (Qt, GTK+, Electron, etc.) and game engines (Unreal Engine, Godot, Source, Three.js, etc.).
+The choice was made to use a~game engine because the main functionality of the editor is moving around and interacting with objects in 3D, which game engines are arguably more suited for.
 
-Unity was chosen as the framework to implement the editor in, chosen mainly due to the author's experience with Unity and C\# in general, along with a large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
+Unity was chosen as the framework to implement the editor in, chosen mainly due to the author's experience with Unity and C\# in general, along with a~large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
 
 The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
 
 \section{Functionality}
 
 \subsection{Movement}
-Movement is implemented using keyboard in a way commonly used in 3D programs.
+Movement is implemented using keyboard in a~way commonly used in 3D programs.
 The arrow or \verb|WSAD| keys provide left, right, forward and backward movement, while the \verb|Space| and \verb|Shift| keys allow flying up and down.
 
 Physics and gravity are also implemented, with the character being pulled to the ground when not flying, and colliding with both the wall and the holds.
 
 \subsection{Wall and hold format}
-For the editor to correctly load the scene, it expects the wall and holds to be in the \verb|obj| file format, possibly with a \verb|mtl| file and a bitmap texture.
+For the editor to correctly load the scene, it expects the wall and holds to be in the Wavefront object (\verb|.obj|) file format, possibly with a Material Template Library (\verb|.mtl|) file and a~corresponding bitmap texture.
 It has specific requirements on naming and location of the files which differs slightly from Clis.
-This is because the editor uses only a subset of the files generated from Clis along with a few that Clis doesn't generate.
-To make things easier, the editor contains a Python script to automatically import models from Clis.
+This is because the editor uses only a~subset of the files generated from Clis along with a~few that Clis doesn't generate.
+To make things easier, the editor contains a~Python script to automatically import models from Clis.
 
-The wall can also contain a \verb|yaml| metadata file for wall-specific things: the possible route grades, names of the setters and wall zones.
-This is to simplify editing route properties by selecting the right option from a dropdown, instead of having to manually type it in.
+The wall can also contain a~\verb|yaml| metadata file for wall-specific things: the possible route grades, names of the setters and wall zones.
+This is to simplify editing route properties by selecting the right option from a~dropdown, instead of having to manually type it in.
 Here is an example of one such file:
 
 \begin{minted}{yaml}
@@ -41,20 +41,20 @@ Zones: ["pool", "overhang", "comp"]
 
 \subsection{Editor modes}
 The editor contains three modes in which it operates, with the current mode being always displayed in the top right.
-While this might seem like an implementation detail, it is important for user documentation and general usage, because the user always knows which state the editor is in.
-An obvious inspiration is the Vim text editor, which makes the mode distinction similarly apparent.
+While this might seem like an implementation detail, it is helpful for general usage, because the user always knows which state the editor is in and can refer to the respective part of the documentation.
+An obvious inspiration is the Vim text editor \cite{vim}, which uses the same concept.
 
 The modes are the following:
 
 \begin{itemize}
 	\item \textbf{NORMAL} -- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
-	\item \textbf{HOLDING} -- the mode in which the user is holding a specific hold and can place it, or switch to the next one from the selection.
+	\item \textbf{HOLDING} -- the mode in which the user is holding a~specific hold and can place it, or switch to the next one from the selection.
 	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
 \end{itemize}
 
 \subsection{Hold selection}
 Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it largely dictates time the route setting takes.
-The editor contains a menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a subset of holds can be filtered and used while editing.
+The editor contains a~menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a~subset of holds can be filtered and used while editing.
 
 Holds can be filtered by their color, type, manufacturer, or custom labels.
 By default, the currently filtered holds are also sorted first by their color and then by their volume.
@@ -65,21 +65,23 @@ To make it further apparent which hold is currently held and which one is previo
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{images/editor/picker.jpg}%
-	\caption{The hold picker UI (no filters applied) on a sample dataset.}%
+	\caption{The hold picker UI (no filters applied) on a~sample dataset.}%
 	\label{fig:picker}
 \end{figure}
 
 \subsection{Import and Export}
-The import and export format for the project files is a human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
+The import and export format for the project files is a~human-readable \verb|yaml| file containing information about the state of the holds, routes, paths to the models and other metadata.
 This makes usage in other applications easier (both for viewing and modification), since it is well readable and parseable.
 Here is how the format looks like:
+
+\newpage
 
 \begin{minted}{yaml}
 Version: 2.3.0 # Editor version (for compatibility reasons)
 
 Player: # player settings
   Light: false # whether the player's light is on
-  Position: # the player position as a vector
+  Position: # the player position as a~vector
     x: 4.66010237
     y: 1.93126345
     z: -8.63198185
@@ -91,8 +93,8 @@ Player: # player settings
 WallModelPath: /home/tom/Wall/wall.obj
 HoldModelsPath: /home/tom/Holds
 
-Holds: # a dictionary of hold instances
-  f21cde933ad9: # a unique ID for the hold instance
+Holds: # a~dictionary of hold instances
+  f21cde933ad9: # a~unique ID for the hold instance
     BlueprintId: 4bdff2704462 # an ID of the hold model
     State:
       Position: # the position of the hold in space
@@ -119,7 +121,7 @@ Holds: # a dictionary of hold instances
       Rotation: 1.21387374
       Flipped: false
 
-Routes: # a list of routes
+Routes: # a~list of routes
 - Name: The Nose
   Grade: VI
   Zone: El Capitan
@@ -128,17 +130,17 @@ Routes: # a list of routes
   - 0436ff53a1d8
   - f21cde933ad9
 
-StartingHoldIDs: # a list of starting holds
+StartingHoldIDs: # a~list of starting holds
 - f21cde933ad9
 
-EndingHoldIDs: # a list of ending holds
+EndingHoldIDs: # a~list of ending holds
 - 0436ff53a1d8
 
-SelectedHoldBlueprintIDs: # a list of currently selected holds
+SelectedHoldBlueprintIDs: # a~list of currently selected holds
 - f21cde933ad9
 - 0436ff53a1d8
 
-Lights: # a list of point lights around the wall
+Lights: # a~list of point lights around the wall
   Positions:
   - x: 3.71035504
     y: 3.53241396
@@ -161,12 +163,12 @@ Right-clicking an already selected route brings up the route settings menu, from
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{images/editor/settings.jpg}
-	\caption{Route settings for a sample route.}%
+	\caption{Route settings for a~sample route.}%
 	\label{fig:routesettings}
 \end{figure}
 
-In addition, a hold can be marked as the starting hold or the ending hold of a route by hovering it and pressing \verb|t| (top) or \verb|b| (bottom) respectively.
-The hold is then denoted by a marker, as seen in figure \ref{ref:topbotmarkers}.
+In addition, a~hold can be marked as the starting hold or the ending hold of a~route by hovering it and pressing \verb|t| (top) or \verb|b| (bottom) respectively.
+The hold is then denoted by a~marker, as seen in figure \ref{ref:topbotmarkers}.
 This marker moves to the bottom of the hold so it is always visible, no matter the hold position and orientation.
 
 \begin{figure}[h]
@@ -208,16 +210,16 @@ All of the code (besides the freely used packages, which have their own licensin
 In addition to the editor code, the following free packages were used:
 
 \begin{itemize}
-	\item \textbf{Quick Outline} \cite{quickoutline} -- object outline creator,
-	\item \textbf{Runtime OBJ Importer} \cite{objimport} -- an \verb|.obj| file importer and
-	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} -- a cross-platform file browser.
+	\item \textbf{Quick Outline} \cite{quickoutline} --- object outline creator,
+	\item \textbf{Runtime OBJ Importer} \cite{objimport} --- an \verb|.obj| file importer and
+	\item \textbf{Unity Standalone File Browser} \cite{unitystandalonefilebrowser} --- a~cross-platform file browser.
 \end{itemize}
 
 The new Unity UI package (UIElements) was used for creating the user interface.
 It uses structured UXML (Unity XML) files to describe each respective UI part, which are styled using USS (Unity Style Sheets).
 It was chosen over the older, GameObject-oriented approach because it is more structured and scalable (no need to manually create game objects).
 
-Git is used for version control and is hosted on GitHub \cite{cled}.
+Git is used for version control, with the entire repository being hosted on GitHub \cite{cled}.
 Each release is automatically built for all supported platforms from the source code using GitHub Actions on tagged commits.
 The version numbering scheme follows Semantic Versioning 2.0 \cite{semver}.
 
@@ -273,7 +275,7 @@ The codebase can be broadly split into the following parts:
 The interactions of the user with the code are done either through one of the controller classes (movement, camera, hold interactions) or through the UI classes (toolbar, hold picker, popups, etc.).
 
 The manager classes encapsulate functionality that need to be managed, such as the holds, routes, lights and highlighted objects.
-They don't depend on any classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a route is selected).
+They don't depend on any classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a~route is selected).
 
 The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI depend on others. 
 Examples include

@@ -1,0 +1,21 @@
+\chapter{Cled source code}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{% folder icons by default; override using file for file icons
+    directory,
+  },
+  [Cled
+    [Assets
+      [Materials, label=right:Materials for starting and ending markers.]
+      [Prefabs, label=right:Starting and ending marker prefabs.]
+      [Scenes, label=right:Game scene and lighting settings.]
+      [Script, label=right:Editor code.]
+      [UI, label=right:UI semantic and styling files.]
+      [tutorials, label=right:Tutorials on scanning both the holds and the wall.]
+    ]
+    [Models, label=right:Sample wall and hold models.]
+    [Scripts, label=right:Scripts for importing data from Clis.]
+    [CHANGELOG.md, file, label=right:Contains the list of changes for each version.]
+  ]
+\end{forest}

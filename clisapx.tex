@@ -1,0 +1,20 @@
+\chapter{Clis source code}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{% folder icons by default; override using file for file icons
+    directory,
+  },
+  [Clis
+    [01-scanning, label=right:Utilities for scanning the objects.
+      [markers, label=right:Marker models and images.]
+      [turntable, label=right:Turntable models and code.]
+      [tutorials, label=right:Tutorials on scanning both the holds and the wall.]
+    ]
+    [02-processing, label=right:Utilities for generating models from scans.]
+    [03-data, label=right:Utilities for working with the generated models.]
+    [tasks, label=right:Pre-programmed tasks.]
+    [config.py, file, label=right:Clis configuration.]
+    [utilities.py, file, label=right:Various utility functions used in Clis.]
+  ]
+\end{forest}

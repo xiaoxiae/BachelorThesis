@@ -3,11 +3,10 @@
 \section{Setting up}\label{apx:clissetup}
 
 For the setup, you will need to first install \mintinline{text}{pyenv}:
-
 \begin{minted}{text}
+# make sure to read what the script does before running it!
 curl https://pyenv.run | bash
 \end{minted}
-
 and configure your shell's environment: \url{https://github.com/pyenv/pyenv\#basic-github-checkout}.
 You will then need to install Python \mintinline{text}{3.7.x} (due to Metashape and Blender working only with older Python versions):
 
@@ -15,28 +14,29 @@ You will then need to install Python \mintinline{text}{3.7.x} (due to Metashape 
 pyenv install -v 3.7.12
 \end{minted}
 
-To set up the virtual environment, do (in this directory)
+To set up the virtual environment, do (in this directory):
 
 \begin{minted}{text}
 pyenv virtualenv 3.7.12 clis
 pyenv local clis
 pyenv activate clis
 pyenv exec pip install -r requirements.txt
-pyenv exec bpy_post_install
+pyenv exec bpy_post_install # finds Blender and copies over
+                            # some of its scripts
 \end{minted}
 
 \section{Contents}
 
 Before running the scripts (using \mintinline{text}{pyenv exec}), it is advisable
-to check the configuration file \mintinline{text}{config.py}, since a lot of the values will most likely
+to check the configuration file \mintinline{text}{config.py}, since a~lot of the values will most likely
 differ from their default values for your particular setup. Each of the
-respective folders contain a \mintinline{text}{README.md} that further explains
+respective folders contain a~\mintinline{text}{README.md} that further explains
 the usage of each of the scripts.
 
 \begin{itemize}
-	\item \mintinline{text}{01-scanning/} -- tools for scanning the holds.
-	\item \mintinline{text}{02-processing/} -- tools for processing the hold images into models.
-	\item \mintinline{text}{03-data/} -- hold data format specification + tools for managing the models.
+	\item \mintinline{text}{01-scanning/} --- tools for scanning the holds.
+	\item \mintinline{text}{02-processing/} --- tools for processing the hold images into models.
+	\item \mintinline{text}{03-data/} --- hold data format specification + tools for managing the models.
 \end{itemize}
 
 \section{Usage}
@@ -44,12 +44,12 @@ the usage of each of the scripts.
 \subsection{Using tasks}
 
 To simplify the usage of Clis, various pre-programmed scripts have been added.
-To create a single model using them, you can do the following:
+To create a~single model using them, you can do the following:
 
 \begin{itemize}
-	\item \mintinline{text}{./scan_single.sh} to scan a single hold,
+	\item \mintinline{text}{./scan_single.sh} to scan a~single hold,
 	\item \mintinline{text}{./move_from_camera.sh} to move the hold photos from the camera,
-	\item \mintinline{text}{./convert_from_raw.sh} to convert the photos to a usable format,
+	\item \mintinline{text}{./convert_from_raw.sh} to convert the photos to a~usable format,
 	\item \mintinline{text}{./generate_models.sh} to generate the model and finally
 	\item \mintinline{text}{./add_models.sh} to add the model to the \mintinline{text}{holds.yaml} file.
 \end{itemize}
@@ -64,8 +64,8 @@ pyenv exec python 01-scanning/01-scan.py automatic 15 \
 	&& pyenv exec python 01-scanning/03-convert.py
 \end{minted}
 
-to automatically take 15 pictures of the hold, copy it from the camera
-and convert it from raw. If you want to take them manually because you
+to automatically take 15 pictures of the hold, copy them from the camera
+and convert them from raw. If you want to take them manually because you
 don't have the turntable, replace \texttt{automatic} with
 \texttt{manual}. Then run
 
@@ -79,5 +79,5 @@ To generate the model. Finally, run
 pyenv exec python 03-data/01-add_models.py
 \end{minted}
 
-To add the information about the hold to the \texttt{holds.yaml}
+to add the information about the hold to the \texttt{holds.yaml}
 dictionary.
