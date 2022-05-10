@@ -47,9 +47,9 @@ An obvious inspiration is the Vim text editor \cite{vim}, which uses the same co
 The modes are the following:
 
 \begin{itemize}
-	\item \textbf{NORMAL} -- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
-	\item \textbf{HOLDING} -- the mode in which the user is holding a~specific hold and can place it, or switch to the next one from the selection.
-	\item \textbf{ROUTE} -- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
+	\item \textbf{NORMAL} --- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
+	\item \textbf{HOLDING} --- the mode in which the user is holding a~specific hold and can place it, or switch to the next one from the selection.
+	\item \textbf{ROUTE} --- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
 \end{itemize}
 
 \subsection{Hold selection}
@@ -234,40 +234,40 @@ The codebase can be broadly split into the following parts:
 \begin{itemize}
 	\item Controller classes:
 	\begin{itemize}
-		\item \verb|CameraController| -- controls the camera movement.
-		\item \verb|MovementController| -- controls the player movement
-		\item \verb|EditorController| -- controls interaction with holds.
-		\item \verb|UIKeyboardController| -- controls UI using the keyboard.
+		\item \verb|CameraController| --- controls the camera movement.
+		\item \verb|MovementController| --- controls the player movement
+		\item \verb|EditorController| --- controls interaction with holds.
+		\item \verb|UIKeyboardController| --- controls UI using the keyboard.
 	\end{itemize}
 	\item Manager classes:
 	\begin{itemize}
-		\item \verb|EditorModeManager| -- manages the current editor mode.
-		\item \verb|HighlightManager| -- manages hold highlighting.
-		\item \verb|HoldStateManager| -- manages the state of the holds.
-		\item \verb|LightManager| -- manages the wall lights.
-		\item \verb|RouteManager| -- manages routes.
-		\item \verb|Preferences| -- manages preferences.
+		\item \verb|EditorModeManager| --- manages the current editor mode.
+		\item \verb|HighlightManager| --- manages hold highlighting.
+		\item \verb|HoldStateManager| --- manages the state of the holds.
+		\item \verb|LightManager| --- manages the wall lights.
+		\item \verb|RouteManager| --- manages routes.
+		\item \verb|Preferences| --- manages preferences.
 	\end{itemize}
 	\item User Interface classes:
 	\begin{itemize}
-		\item \verb|BottomBar| -- controls bottom bar.
-		\item \verb|HoldPickerMenu| -- controls hold picker menu.
-		\item \verb|LoadingScreenMenu| -- controls loading screen.
-		\item \verb|PauseMenu| -- controls the pausing.
-		\item \verb|PopupMenu| -- controls the popups.
-		\item \verb|RouteSettingsMenu| -- controls route settings menu.
-		\item \verb|RouteViewMenu| -- controls route view menu.
-		\item \verb|SettingsMenu| -- controls settings menu.
-		\item \verb|ToolbarMenu| -- controls the top toolbar.
+		\item \verb|BottomBar| --- controls bottom bar.
+		\item \verb|HoldPickerMenu| --- controls hold picker menu.
+		\item \verb|LoadingScreenMenu| --- controls loading screen.
+		\item \verb|PauseMenu| --- controls the pausing.
+		\item \verb|PopupMenu| --- controls the popups.
+		\item \verb|RouteSettingsMenu| --- controls route settings menu.
+		\item \verb|RouteViewMenu| --- controls route view menu.
+		\item \verb|SettingsMenu| --- controls settings menu.
+		\item \verb|ToolbarMenu| --- controls the top toolbar.
 	\end{itemize}
 	\item Import and Export classes:
 	\begin{itemize}
-		\item \verb|Importer| -- facilitates importing state.
-		\item \verb|Exporter| -- facilitates exporting state.
-		\item \verb|HoldLoader| -- loads the holds.
-		\item \verb|WallLoader| -- loads the wall.
+		\item \verb|Importer| --- facilitates importing state.
+		\item \verb|Exporter| --- facilitates exporting state.
+		\item \verb|HoldLoader| --- loads the holds.
+		\item \verb|WallLoader| --- loads the wall.
 	\end{itemize}
-	\item \verb|Utilities| -- random utility functions and classes.
+	\item \verb|Utilities| --- random utility functions and classes.
 \end{itemize}
 
 \subsection{Class interactions}

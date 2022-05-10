@@ -13,7 +13,7 @@ Because the problem is difficult and involves a~lot of steps and specialized alg
 This thesis uses the Agisoft Metashape photogrammetry software \cite{metashape}.
 While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
 \begin{itemize}
-	\item It created the highest-quality models out of the tested programs, given a~representative sample of the hold images, which consted of a~foothold, two regular holds and a~dual texture hold.
+	\item It created the highest-quality models out of the tested programs, given a~representative sample of the hold images, which consisted of a~foothold, two regular holds and a~dual texture hold.
 	\item It includes a~well-documented Python API, along with a~good GUI.
 \end{itemize}
 
@@ -64,16 +64,16 @@ To calculate the vectors for the selected pixels, the magnitude $M(x,y)$ and ori
 \end{align}
 
 The $\mathrm{atan2(x, y)}$ function used returns the angle between the $x$ axis and the point $(x, y)$.
-It is a more general version of the $\mathrm{atan(y/x)}$ function, which doesn't distinguish points like $(-x, -y)$ and $(x, y)$ (only their ratio is used).
+It is a more general version of the $\mathrm{atan(y/x)}$ function, which doesn't distinguish points like $(-x, -y)$ and $(x, y)$ (since only their ratio is used).
 
 For the vectors to be invariant to orientation and contrast changes, a~canonical representation is calculated from their local image gradients.
 
-A note to be made is that SIFT can be utilised in other feature-matching problems such as stitching panoramas and finding objects in images (which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}).
+A note to be made is that SIFT can be utilised in other feature-matching problems such as stitching panoramas and finding objects in images, which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}.
 
 \subsection{Feature matching}
 Once the canonical representations of the vectors have been calculated, the images are examined pairwise.
 For each feature in one image, the nearest neighbour (in terms of the vector distance in a~suitable norm) is found in the other.
-To filter out features that only appear in one of the images, a~limit is imposed on the ratio of the distances between the closest and the second closest neighbour -- intuitively, good features should have only one matching candidate.
+To filter out features that only appear in one of the images, a~limit is imposed on the ratio of the distances between the closest and the second closest neighbour --- intuitively, good features should have only one matching candidate.
 
 Since the number of features to match can be quite large and no efficient exact algorithm exist for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}.
 This algorithm returns the nearest neighbour with a~high probability, otherwise returning a~close one.
@@ -182,7 +182,7 @@ The gphoto2 \cite{gphoto2} library is used to control the camera.
 Its API can capture images, focus the camera and also interact with the camera file system.
 All of the images were taken using Nikon z50 with a~Nikkor 18-55mm f/3.5--5.6 lens.
 
-\begin{figure}
+\begin{figure}[!b]
 	\centering
 	\includesvg[width=\columnwidth]{images/wiring.svg}
 	\caption{The wiring diagram of the turntable, created using Fritzing \cite{fritzing}.}
@@ -207,8 +207,8 @@ This allows the turntable to handle objects of up to \SI{8}{\kilo\gram}, with he
 	\subfloat[\centering Plexiglass (top).]{{\includegraphics[height=3.6cm]{images/realturntable/top2.jpg} }}%
 	\hfill
 	\hspace{1.2em}
-	\subfloat[\centering Plexiglass (bottom) and top part.]{{\includegraphics[height=3.6cm]{images/realturntable/top1.jpg} }}%
-	\caption{Parts of the model of the turntable, generated using Fusion 360 (top row) and photographed using the Nikon z50 DLSR. }%
+	\subfloat[\centering Plexiglass (bottom), connected to the top part.]{{\includegraphics[height=3.6cm]{images/realturntable/top1.jpg} }}%
+	\caption{Parts of the model of the turntable, generated using Fusion 360 (top row) and photographed using the Nikon z50 DLSR (bottom row). }%
 	\label{fig:turntable}
 \end{figure}
 
@@ -260,9 +260,9 @@ Photogrammetry works best with sharp, high-resolution images with the least amou
 To achieve this, the following settings were used on all of the images:
 \begin{itemize}
 	\item resolution: $5600 \times 3728$
-	\item ISO sensitivity: 320 -- lower sensitivity generally means less image noise
-	\item aperature: 22 -- higher aperature widens the focal plane, which results in the entire scanned object being in focus and thus reducing blur
-	\item exposure time: apx. $\SI{1.5}{\second}$ -- calculated from the sensitivity and the aperature for the image to have the correct contrast
+	\item ISO sensitivity: 320 --- lower sensitivity generally means less image noise
+	\item aperature: 22 --- higher aperature widens the focal plane, which results in the entire scanned object being in focus and thus reducing blur
+	\item exposure time: apx. $\SI{1.5}{\second}$ --- calculated from the sensitivity and the aperature for the image to have the correct contrast
 \end{itemize}
 
 The settings only be used since the camera is static and the hold doesn't move while taking the image, otherwise the exposure time would be too high.
@@ -297,12 +297,12 @@ This is done using the OpenCV \cite{opencv} (as seen in figure \ref{fig:mask}) b
 
 \subsection{Dual texture holds}\label{sec:dual}
 Glossy surfaces are a~problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
-This problem is present for ``dual-texture'' holds which, as the name suggests, contain two textures -- a~matte texture that is meant for the climber to hold (or step) onto, and the glossy texture which is (usually) not.
+This problem is present for ``dual-texture'' holds which, as the name suggests, contain two textures --- a~matte texture that is meant for the climber to hold (or step) onto, and the glossy texture which is (usually) not.
 
 A standard way of dealing with glossy surfaces in photogrammetry is to cover them in something that is matte.
 While this does solve the problem of model generation, it ruins the texture, because the matte solution is usually opaque, thus requiring another set of images for texturing.
 
-In our case, however, the solution is pretty straightforward -- cover them in climbing chalk (figure \ref{fig:chalk}).
+In our case, however, the solution is pretty straightforward --- cover them in climbing chalk (figure \ref{fig:chalk}).
 Since it is matte, it reduces the reflections of the glossy surface and provides additional feature points, making it easier for the photogrammetry software to reconstruct the model.
 Additionally, since climbing chalk will be applied to the holds by climbers during regular usage anyway, there is no need to obtain more images for texturing.
 
@@ -337,7 +337,7 @@ The specification of a~single item is as follows:
 
 All of the specified attributes are optional.
 Some (like volume and date) are automatically inferred, while others (type, manufacturer) have to be added manually.
-The first 12 characters of the hashsum were chosen for readability purposes and because collisions are very unlikely.\footnote{This is a~generalization of the birthday paradox. Total pool of hashes has size $N = 16^{12}$. The number of items needed for the probability of collision being $\ge \frac{1}{2}$ can be calculated as the largest~$r$ for which $\prod_{i = 1}^{r} \frac{N - r}{N} \ge \frac{1}{2}$ holds. Using an approximation for $r = \left\lceil \sqrt{2N \ln 2} + 1 \right\rceil$ \cite{brink2012probably} yields $1\,177\,411$, which is likely more than enough.}
+The first 12 characters of the hash were chosen for readability purposes and because collisions are very unlikely.\footnote{This is a~generalization of the birthday paradox. Total pool of hashes has size $N = 16^{12}$. The number of items needed for the probability of collision being $\ge \frac{1}{2}$ can be calculated as the largest~$r$ for which $\prod_{i = 1}^{r} \frac{N - r}{N} \ge \frac{1}{2}$ holds. Using an approximation for $r = \left\lceil \sqrt{2N \ln 2} + 1 \right\rceil$ \cite{brink2012probably} yields $1\,177\,411$, which is likely more than enough.}
 
 \section{Creating the wall model}
 Since the wall model gets only created once, there is no real reason to automate this process.

@@ -21,7 +21,7 @@ pyenv virtualenv 3.7.12 clis
 pyenv local clis
 pyenv activate clis
 pyenv exec pip install -r requirements.txt
-pyenv exec bpy_post_install # finds Blender and copies over
+pyenv exec bpy_post_install # locates Blender and copies over
                             # some of its scripts
 \end{minted}
 
@@ -63,21 +63,16 @@ pyenv exec python 01-scanning/01-scan.py automatic 15 \
 	&& pyenv exec python 01-scanning/02-copy.py camera \
 	&& pyenv exec python 01-scanning/03-convert.py
 \end{minted}
-
 to automatically take 15 pictures of the hold, copy them from the camera
 and convert them from raw. If you want to take them manually because you
 don't have the turntable, replace \texttt{automatic} with
 \texttt{manual}. Then run
-
 \begin{minted}{text}
 pyenv exec python 02-processing/01-model.py
 \end{minted}
-
-To generate the model. Finally, run
-
+to generate the model. Finally, run
 \begin{minted}{text}
 pyenv exec python 03-data/01-add_models.py
 \end{minted}
-
 to add the information about the hold to the \texttt{holds.yaml}
 dictionary.
