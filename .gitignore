@@ -2,6 +2,9 @@
 papers/
 ignored/
 
+# Aspell
+*.bak
+
 # LaTeX-related
 _minted-thesis/
 *.aux
