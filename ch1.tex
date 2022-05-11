@@ -8,7 +8,7 @@ This was not a~viable option due to the high price, because products that could 
 However, since a~number of the aforementioned programs support laser scanning out of the box, the photogrammetry approach could be combined with laser scanning and thus enjoy the advantages of both.
 
 \section{Feature-based photogrammetry}
-Because the problem is difficult and involves a~lot of steps and specialized algorithms, many open-source and proprietary programs have been developed to simplify this task.
+Because the problem of creating 3D models from images is difficult and involves a~lot of steps and specialized algorithms, many open-source and proprietary programs have been developed to simplify this task.
 
 This thesis uses the Agisoft Metashape photogrammetry software \cite{metashape}.
 While there are other suitable photogrammetry programs such as Meshroom (free), 3DF Zephyr (commercial) and COLMAP (free), Metashape was chosen for the following reasons:
@@ -17,7 +17,7 @@ While there are other suitable photogrammetry programs such as Meshroom (free), 
 	\item It includes a~well-documented Python API, along with a~good GUI.
 \end{itemize}
 
-Since it is closed-source, there is no easy way to describe and cite the exact algorithms used.
+Since it is closed-source, there is no easy way to determine the exact algorithms used.
 However, a~forum statement from the lead developer Dmitry Semyonov \parencite{metashapeForumPost}, with addition of license files for various open-source projects included with Metashape, give a~good overview of the general methods used.
 
 Starting with a~set of images and ending with a~textured model, the process can be split into the following parts:
@@ -44,7 +44,7 @@ Formally, a~scale-space for a~given 2D image $I(x, y)$ is defined as a~function
 The $*$ symbol is a~convolution of the two functions in $x$ and $y$, and $G$ is the Gaussian function
 \begin{equation}G(x, y, \sigma) = \frac{1}{2\pi \sigma^2}\ \mathrm{e}^{-(x^2 + y^2) / 2\sigma^2}\end{equation}
 
-This operation is applied twice on image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$ (see figure \ref{fig:gaussexample}).
+This operation is applied twice to image $I$ with $\sigma = \sqrt{2}$, yielding images $I_{1,1}, I_{2,1}$, the difference of which yields the image $G_1$ (see figure \ref{fig:gaussexample}).
 After this, the image $I_{2,1}$ is downscaled by a~certain factor (the original method uses $1.5$ with bilinear interpolation) and the process is repeated, yielding $I_{1,2}, I_{2,2}$ and $G_2$, respectively.
 
 \begin{figure}
@@ -54,10 +54,10 @@ After this, the image $I_{2,1}$ is downscaled by a~certain factor (the original 
 	\label{fig:gaussexample}
 \end{figure}
 
-To find the vectors, the local minima and maxima (compared to the 8 neighbouring pixels) of the pixels of $G_1$ are examined --- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are selected as features.
+To find the vectors, the local minima and maxima of the pixels of $G_1$ (compared to the 8 neighbouring pixels) are examined --- if they are also minima/maxima in $G_2$ (accounting for the downscaling), they are selected as features.
 The intuitive idea behind this approach is to suppress the finer details of the image, since each of the main features of the original image should be present in the ``coarse/blurred'' version \cite{scalespace}.
 
-To calculate the vectors for the selected pixels, the magnitude $M(x,y)$ and orientation $R(x,y)$ is calculated using their neighbouring points via the following formula:
+To calculate the vectors for the selected pixels, the vector's magnitude $M(x,y)$ and orientation $R(x,y)$ is determined using their neighbouring points via the following formula:
 \begin{align}
 	M(x,y) &= \sqrt{\left(I_{1,1}(x, y) - I_{1,1}(x + 1, y)\right)^2 + \left(I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)^2} \\[0.7em]
 	R(x,y) &= \mathrm{atan2} \left(I_{1,1}(x, y) - I_{1,1}(x + 1, y), I_{1,1}(x,y) - I_{1,1}(x, y + 1)\right)
@@ -68,14 +68,14 @@ It is a more general version of the $\mathrm{atan(y/x)}$ function, which doesn't
 
 For the vectors to be invariant to orientation and contrast changes, a~canonical representation is calculated from their local image gradients.
 
-A note to be made is that SIFT can be utilized in other feature-matching problems such as stitching panoramas and finding objects in images, which could potentially be used to locate hold models, as discussed in section \ref{sec:conclusion}.
+A note to be made is that SIFT can be utilized in other feature-matching problems such as stitching panoramas and finding objects in images, which could potentially be used to locate hold models.
 
 \subsection{Feature matching}
 Once the canonical representations of the vectors have been calculated, the images are examined pairwise.
 For each feature in one image, the nearest neighbour (in terms of the vector distance in a~suitable norm) is found in the other.
 To filter out features that only appear in one of the images, a~limit is imposed on the ratio of the distances between the closest and the second closest neighbour --- intuitively, good features should have only one matching candidate.
 
-Since the number of features to match can be quite large and no efficient exact algorithm exist for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}.
+Since the number of features to match can be quite large and no efficient exact algorithm exists for the problem of finding the nearest neighbour, an approximate algorithm called best-bin-first is used \cite{beis1997shape}.
 This algorithm returns the nearest neighbour with a~high probability, otherwise returning a~close one.
 It internally uses a~$k$-d tree to partition the space into bins of the feature vectors, which it then searches in an efficient way.
 
@@ -83,7 +83,7 @@ It internally uses a~$k$-d tree to partition the space into bins of the feature 
 After the features have been determined and matched across the images, the next step is to simultaneously calculate their position in the 3D space and also the positions of the cameras.
 This is referred to as the bundle adjustment problem \cite{triggs1999bundle}, the name referring to bundles of rays from the predicted positions of the points going into the cameras.
 
-Formally, we can model the scene by $n$ vectors of 3D points $\mathbf{X}_{i \in [n]}$ (sometimes called a~sparse point cloud), taken from $m$ cameras with parameters (position, focal length, etc.) given by vectors $\mathbf{P}_{j \in [m]}$.
+Formally, we can model the scene by $n$ vectors of 3D points $\mathbf{X}_{i \in [n]}$ (sometimes called a~sparse point cloud), taken from $m$ cameras with parameters given by vectors $\mathbf{P}_{j \in [m]}$ (position, focal length, etc.).
 The features can then be seen as observations $\overline{\bm{x}}_{ij}$ of point $i$ from camera $j$.
 
 Let's now assume that we have a~function $\bm{x}(\mathbf{X}_i, \mathbf{P}_j)$ that, given the feature position $\mathbf{X}_i$ and camera position $\mathbf{P}_j$, models the calculated observation position $\mathbf{x}_{i, j}$.
@@ -96,7 +96,7 @@ where each $W_i$ is a~symmetric positive definite matrix indicating the weight o
 	\subfloat[Sparse point cloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/sparse.png} }}%
 	\hfill
 	\subfloat[Dense point cloud.]{{\includegraphics[height=5.3cm]{images/pointclouds/dense.png} }}%
-	\caption{Sparse and dense point cloud comparison on a~sample object, generated using Agisoft Metashape.}%
+	\caption{Sparse and dense point cloud comparison on a~sample hold, generated using Agisoft Metashape.}%
 \end{figure}
 
 \subsection{Dense point cloud generation}
@@ -104,19 +104,19 @@ Since the feature matching step generates a~small number of features compared to
 The approach is based on generating depth-maps (grayscale images indicating the distance of each pixel from the camera) for each image and merging them together \cite{shen2013accurate}.
 
 \subsubsection{Stereo pair selection}
-First, each image is paired with another image to generate its depth-map.
-The paired image should view the object from a~similar direction but a~different angle that is not too close (\ang{5}) and too far (\ang{60}).
-The camera centers should additionally be between $2 \overline{d}$ and $0.05 \overline{d}$, where $\overline{d}$ is the median of the distances between the images fitting the viewing angle.
+First, each (target) image is paired with another (reference) image to generate its depth-map.
+The reference image should view the object from a~similar direction but a~different angle that is not too close (\ang{5}) and too far (\ang{60}).
+The camera centers should additionally be between $2 \overline{d}$ and $0.05 \overline{d}$, where $\overline{d}$ is the median of the distances between the images within the viewing angle.
 
-The optimal image is selected as the one minimizing the product of the viewing angle and the camera center distance, while the others (sorted and limited to 10) are considered the image neighbourhood $N_i$.
+The reference image is selected as the one minimizing the product of the viewing angle and the camera center distance, while the others (sorted and limited to 10) are considered the image neighbourhood $N_i$.
 
 \subsubsection{Depth-map computation}
 The core of the computation is based on the PatchMatch algorithm \cite{barnes2009PAR}.
 
 A random 3D point, along with a~normal (forming a~plane), is assigned to each of the pixels of all images, such that they are in the viewing ray of their camera.
 For each of the pixels, a~square ``patch'' centered on the pixel is placed on the image.
-Then, for each pixel in it (across all images), a~matching cost is calculated (how well the point corresponding to the pixel fits with the others).
-This cost then iteratively improved either by moving the point to the plane of one of its neighbours, or by randomly changing it.
+Then, for each pixel in it (across the reference image), a~matching cost is calculated (how well the point corresponding to the pixel fits with the others).
+This cost is then iteratively improved either by moving the point to the plane of one of its neighbours, or by randomly changing it.
 
 \subsubsection{Depth-map refinement}
 To make the depth of the common areas consistent, each pixel of the depth-maps is considered --- if its corresponding point is close to its position in the neighbouring images $N_i$ (when projecting it onto the neighbouring image and then back using the neighbouring image depth-map), it is retained; otherwise it is removed from the depth-map.
@@ -147,7 +147,7 @@ Additional steps can be taken to normalize certain properties of the images, suc
 	\subfloat[Textured view.]{{\includegraphics[height=2.3cm]{images/texture/texture.jpg} }}%
 	\hfill
 	\subfloat[Wireframe view.]{{\includegraphics[height=2.3cm]{images/texture/wireframe.jpg} }}%
-	\caption{Model of the sample object, generated using Agisoft Metashape.}%
+	\caption{Model of a sample hold, generated using Agisoft Metashape.}%
 \end{figure}
 
 \section{Creating hold models}
@@ -161,7 +161,7 @@ It would be convenient if this could be done with the holds still on the wall, b
 	\item the quality of the models (texture and model-wise) might not be sufficient.
 \end{itemize}
 
-Having the holds off the wall, one way to automate the scanning task is to construct a~turntable that turns the hold, with a~stationary camera taking the images from different angles.
+Having the holds off the wall, one way to automate the scanning is to construct a~turntable that turns the hold, with a~stationary camera taking the images from different angles.
 If both the turntable and the camera are programmable, the time spent doing manual work would only include replacing one hold with another when the scanning is finished.
 
 It would be unreasonable to expect the turntable to carry any hold, since larger structures can weigh tens of kilograms and measure more than a~meter.
@@ -169,13 +169,13 @@ However, both the carry weight and size should still be maximized.
 Additionally, faster turntable rotation corresponds to quicker scanning and should thus also be maximized.
 
 \subsection{Turntable design}
-A three stepper-motor turntable has been developed and 3D printed using the Fusion 360 CAD software \cite{fusion} and an Ender Pro 5 3D printer (figure \ref{fig:turntable}).
-An Arduino board and A4988 motor controllers are used for fine motor control (figure \ref{fig:wiring}).
+A three stepper-motor turntable (figure \ref{fig:turntable}) has been developed and 3D printed using the Fusion 360 CAD software \cite{fusion} and an Ender Pro 5 3D printer.
+An Arduino board and A4988 motor controllers (figure \ref{fig:wiring}) are used for fine motor control.
 The models, the code and a~short tutorial on the turntable construction are freely available at the Clis GitHub page \cite{clis}.
 
 Communication with the Arduino is implemented via the USB port.
 The protocol is simple --- the Arduino listens on the serial port until it receives a~string.
-After reading it, it interprets is as integer and turns the corresponding number of degrees.
+After reading it, it interprets it as integer and turns the corresponding number of degrees.
 After the turn, it writes this number back to the serial port and again starts listening for another string.
 
 The gphoto2 \cite{gphoto2} library is used to control the camera.
@@ -229,16 +229,16 @@ For decoding correctness and robustness, the following constraints are additiona
 
 \begin{itemize}
 	\item the targets must be rotationally invariant
-	\item the first bit is a~parity bit ($0$ for odd, $1$ for even)
+	\item the first bit is a~parity bit ($0$ for even, $1$ for odd)
 	\item there must exist an opposing pair of $1$ bits
 \end{itemize}
 
-After the positions of the markers are determined in the 3D space (they are also a~feature described in section \ref{ch:fext} that just uses a~different algorithm to locate them across the images), it is just a~matter of simple linear algebra to transform the model appropriately.
+After the positions of the markers are determined in 3D space (they are also a~feature described in section \ref{ch:fext} that just uses a~different algorithm to locate them across the images), it is just a~matter of simple linear algebra to transform the model appropriately.
 
 \begin{figure}[t]
 	\centering
 	\includesvg[width=0.9\columnwidth]{images/targets.svg}
-	\caption{The 18th 14-bit marker (left) and the corresponding binary value (right). Grey denotes an opposing pair of $1$ bits, blue denotes the parity bit. See \citet{targetsPost} for a comprehensive list of all markers, along with code that generates all valid marker binary values.}
+	\caption{The 18th 14-bit marker (left) and its corresponding binary value (right). Grey denotes an opposing pair of $1$ bits, blue denotes the parity bit. See \citet{targetsPost} for a comprehensive list of all markers, along with code that generates all valid marker binary values.}
 \end{figure}
 
 \subsection{Environment setup}
@@ -262,16 +262,16 @@ To achieve this, the following settings were used on all of the images:
 	\item resolution: $5600 \times 3728$
 	\item ISO sensitivity: 320 --- lower sensitivity generally means less image noise
 	\item aperture: 22 --- higher aperture widens the focal plane, which results in the entire scanned object being in focus and thus reducing blur
-	\item exposure time: apx. $\SI{1.5}{\second}$ --- calculated from the sensitivity and the aperture for the image to have the correct contrast
+	\item exposure time: apx. $\SI{1.5}{\second}$ --- calculated from the sensitivity and the aperture for the image to have the correct brightness
 \end{itemize}
 
-The settings only be used since the camera is static and the hold doesn't move while taking the image, otherwise the exposure time would be too high.
+The settings could only be used since the camera is static and the hold doesn't move while taking the image, otherwise the exposure time would be too high.
 
 \subsection{Image masking}
 The photogrammetry software expects the images to be viewed from various angles.
-This poses a~problem for the turntable setup, since the background might not be perfectly dark and thus create undesired feature points that make it harder to reconstruct the model.
+This poses a~problem for the turntable setup, since the background might not be perfectly dark and thus create false feature points.
 Fortunately, the contrast between the scanned area and the background is large enough to automatically construct a~mask to filter the background out.
-This is done using the OpenCV \cite{opencv} (as seen in figure \ref{fig:mask}) by
+This is done using OpenCV \cite{opencv} (as seen in figure \ref{fig:mask}) by
 \begin{enumerate}
 	\item converting the image to grayscale,
 	\item generating a~binary image using a~threshold on the pixel brightness,
@@ -282,21 +282,21 @@ This is done using the OpenCV \cite{opencv} (as seen in figure \ref{fig:mask}) b
 \begin{figure}[h]
 	% opravdu doufám, že tenhle kód nikdo číst nebude lmao
 	\centering
-	\subfloat[\centering Original.]{{\includegraphics[height=1.65cm]{images/masking/small/hold-clean.jpg} }}%
+	\subfloat[\centering Original.]{{\includegraphics[height=1.67cm]{images/masking/small/hold-clean.jpg}}}%
 	\hfill
-	\subfloat[\centering Smudges.]{{\includegraphics[height=1.65cm]{images/masking/small/hold.jpg} }}%
+	\subfloat[\centering Smudges.]{{\includegraphics[height=1.67cm]{images/masking/small/hold.jpg}}}%
 	\hfill
-	\subfloat[\centering Hold contours.]{{\includegraphics[height=1.65cm]{images/masking/small/contourimage.jpg} }}%
+	\subfloat[\centering Hold contours.]{{\includegraphics[height=1.67cm]{images/masking/small/contourimage.jpg}}}%
 	\hfill
-	\subfloat[\centering Mask.]{{\includegraphics[height=1.65cm]{images/masking/small/mask.jpg} }}%
+	\subfloat[\centering Mask.]{{\includegraphics[height=1.67cm]{images/masking/small/mask.jpg} }}%
 	\hfill
-	\subfloat[\centering Result.]{{\includegraphics[height=1.65cm]{images/masking/small/resulting.jpg} }}%
-	\caption{The process of masking a~hold, generated using OpenCV. A number of smudges were added to the image to show resiliency towards errors.}%
+	\subfloat[\centering Result.]{{\includegraphics[height=1.67cm]{images/masking/small/resulting.jpg}}}%
+	\caption{The process of masking a~hold, generated using OpenCV. A number of smudges were artificially added to the image to show resiliency towards errors.}%
 	\label{fig:mask}
 \end{figure}
 
 \subsection{Dual texture holds}\label{sec:dual}
-Glossy surfaces are a~problematic type of surfaces for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
+Glossy surfaces are a~problematic surface type for photogrammetry, since the angle under which they are viewed changes their appearance due to light reflections.
 This problem is present for ``dual-texture'' holds which, as the name suggests, contain two textures --- a~matte texture that is meant for the climber to hold (or step) onto, and the glossy texture which is (usually) not.
 
 A standard way of dealing with glossy surfaces in photogrammetry is to cover them in something that is matte.
@@ -311,13 +311,13 @@ In such cases, manual modelling using Blender \cite{blender} to reconstruct the 
 
 \begin{figure}[t]
 	\centering
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/1-actual.jpg} }}%
-	\hfill
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/4-actual.jpg} }}%
-	\hfill
-	\subfloat{{\includegraphics[height=2.5cm]{images/holds/3-actual.jpg} }}%
+	\subfloat{\includegraphics[height=2.5cm]{images/holds/1-actual.jpg}}%
+	\hfill%
+	\subfloat{\includegraphics[height=2.5cm]{images/holds/4-actual.jpg}}%
+	\hfill%
+	\subfloat{\includegraphics[height=2.5cm]{images/holds/3-actual.jpg}}%
 	\caption{Example of holds with chalk applied. Some reflections are still visible, but they are not as pronounced as with no chalk applied.}%
-	\label{fig:chalk}
+	\label{fig:chalk}%
 \end{figure}
 
 \subsection{Hold metadata}
@@ -337,19 +337,19 @@ The specification of a~single item is as follows:
 
 All of the specified attributes are optional.
 Some (like volume and date) are automatically inferred, while others (type, manufacturer) have to be added manually.
-The first 12 characters of the hash were chosen for readability purposes and because collisions are very unlikely.\footnote{This is a~generalization of the birthday paradox. Total pool of hashes has size $N = 16^{12}$. The number of items needed for the probability of collision being $\ge \frac{1}{2}$ can be calculated as the largest~$r$ for which $\prod_{i = 1}^{r} \frac{N - r}{N} \ge \frac{1}{2}$ holds. Using an approximation for $r = \left\lceil \sqrt{2N \ln 2} + 1 \right\rceil$ \cite{brink2012probably} yields $1\,177\,411$, which is likely more than enough.}
+The first 12 characters of the hash were chosen for readability purposes and because collisions are very unlikely.\footnote{This is a~generalization of the birthday paradox. Total pool of hashes has size $N = 16^{12}$. The number of items needed for the probability of collision being $\ge \frac{1}{2}$ can be calculated as the largest~$r$ for which $\prod_{i = 1}^{r} \frac{N - r}{N} \ge \frac{1}{2}$ holds. Using an approximation for $r = \left\lceil \sqrt{2N \ln 2} + 1 \right\rceil$ \cite{brink2012probably} yields $1\,177\,411$, which is likely more than enough holds.}
 
 \section{Creating the wall model}
 Since the wall model gets only created once, there is no real reason to automate this process.
-Nevertheless, there is no reason to create it manually, since photogrammetry can again be used to simplify this process.
+Nevertheless, there is no reason to create it manually either, since photogrammetry can again be used.
 
-First, a~set of 188 images was used by the Agisoft Metashape software to create a~reference model.
+First, a~set of 188 images was taken and used by the Agisoft Metashape software to create a~reference model.
 This model was then imported and edited in Blender 3D to remove inaccuracies.
 After the changes, the resulting model was reimported to Metashape to be textured and exported as the final model.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\columnwidth]{images/wall/image.jpg}
-	\caption{The model of the Smíchoff wall, created using Agisoft Metashape and Blender.}
+	\caption{The model of the Smíchoff bouldering wall, created using Agisoft Metashape and Blender.}
 	\label{fig:model}
 \end{figure}

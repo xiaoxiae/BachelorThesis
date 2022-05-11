@@ -11,7 +11,7 @@ There are a~number of requirements on the editor functionality, namely that
 There are many frameworks that support 3D, the two main groups being user interface software (Qt, GTK+, Electron, etc.) and game engines (Unreal Engine, Godot, Source, Three.js, etc.).
 The choice was made to use a~game engine because the main functionality of the editor is moving around and interacting with objects in 3D, which game engines are arguably more suited for.
 
-Unity was chosen as the framework to implement the editor in, chosen mainly due to the author's experience with Unity and C\# in general, along with a~large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
+Unity was chosen as the framework to implement the editor in, mainly due to the author's experience with Unity and C\# in general, along with a~large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
 
 The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
 
@@ -25,9 +25,9 @@ Physics and gravity are also implemented, with the character being pulled to the
 
 \subsection{Wall and hold format}
 For the editor to correctly load the scene, it expects the wall and holds to be in the Wavefront object (\verb|.obj|) file format, possibly with a Material Template Library (\verb|.mtl|) file and a~corresponding bitmap texture.
-It has specific requirements on naming and location of the files which differs slightly from Clis.
+It has specific requirements on naming and location of the files, which differs slightly from Clis.
 This is because the editor uses only a~subset of the files generated from Clis along with a~few that Clis doesn't generate.
-To make things easier, the editor contains a~Python script to automatically import models from Clis.
+To make things easier, the editor contains a~Python script to perform the import automatically.
 
 The wall can also contain a~\verb|yaml| metadata file for wall-specific things: the possible route grades, names of the setters and wall zones.
 This is to simplify editing route properties by selecting the right option from a~dropdown, instead of having to manually type it in.
@@ -48,12 +48,12 @@ The modes are the following:
 
 \begin{itemize}
 	\item \textbf{NORMAL} --- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
-	\item \textbf{HOLDING} --- the mode in which the user is holding a~specific hold and can place it, or switch to the next one from the selection.
+	\item \textbf{HOLDING} --- the mode in which the user is holding a~specific hold and can place it, or switch to the previous/next one from the selection.
 	\item \textbf{ROUTE} --- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
 \end{itemize}
 
 \subsection{Hold selection}
-Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it largely dictates time the route setting takes.
+Quickly selecting which holds to place on the wall is crucial for effective virtual route setting, because it largely dictates the time the route setting takes.
 The editor contains a~menu (accessed via pressing either \verb|Tab| or \verb|Q|) from which a~subset of holds can be filtered and used while editing.
 
 Holds can be filtered by their color, type, manufacturer, or custom labels.
@@ -77,11 +77,11 @@ Here is how the format looks like:
 \newpage
 
 \begin{minted}{yaml}
-Version: 2.3.0 # Editor version (for compatibility reasons)
+Version: 2.3.1 # Editor version (for compatibility reasons)
 
 Player: # player settings
   Light: false # whether the player's light is on
-  Position: # the player position as a~vector
+  Position: # the player position as a vector
     x: 4.66010237
     y: 1.93126345
     z: -8.63198185
@@ -93,8 +93,8 @@ Player: # player settings
 WallModelPath: /home/tom/Wall/wall.obj
 HoldModelsPath: /home/tom/Holds
 
-Holds: # a~dictionary of hold instances
-  f21cde933ad9: # a~unique ID for the hold instance
+Holds: # a dictionary of hold instances
+  f21cde933ad9: # a unique ID for the hold instance
     BlueprintId: 4bdff2704462 # an ID of the hold model
     State:
       Position: # the position of the hold in space
@@ -121,7 +121,7 @@ Holds: # a~dictionary of hold instances
       Rotation: 1.21387374
       Flipped: false
 
-Routes: # a~list of routes
+Routes: # a list of routes
 - Name: The Nose
   Grade: VI
   Zone: El Capitan
@@ -130,17 +130,17 @@ Routes: # a~list of routes
   - 0436ff53a1d8
   - f21cde933ad9
 
-StartingHoldIDs: # a~list of starting holds
+StartingHoldIDs: # a list of starting holds
 - f21cde933ad9
 
-EndingHoldIDs: # a~list of ending holds
+EndingHoldIDs: # a list of ending holds
 - 0436ff53a1d8
 
-SelectedHoldBlueprintIDs: # a~list of currently selected holds
+SelectedHoldBlueprintIDs: # a list of currently selected holds
 - f21cde933ad9
 - 0436ff53a1d8
 
-Lights: # a~list of point lights around the wall
+Lights: # a list of point lights around the wall
   Positions:
   - x: 3.71035504
     y: 3.53241396
@@ -157,8 +157,8 @@ CaptureSettings: # image capture settings
 \end{minted}
 
 \subsection{Building routes}
-After holds have been placed, they can be combined to form routes by right-clicking to select the hold and then \verb|Ctrl| + left/right clicking to add other holds of the route.
-Right-clicking an already selected route brings up the route settings menu, from which various route attributes can be set.
+After holds have been placed, they can be combined to form routes by right-clicking to select a hold and then \verb|Ctrl| + left/right clicking to add other holds to the route.
+Right-clicking an already selected route brings up the route settings menu (figure \ref{fig:routesettings}), from which various route attributes can be set.
 
 \begin{figure}[t]
 	\centering
@@ -169,7 +169,7 @@ Right-clicking an already selected route brings up the route settings menu, from
 
 In addition, a~hold can be marked as the starting hold or the ending hold of a~route by hovering it and pressing \verb|t| (top) or \verb|b| (bottom) respectively.
 The hold is then denoted by a~marker, as seen in figure \ref{ref:topbotmarkers}.
-This marker moves to the bottom of the hold so it is always visible, no matter the hold position and orientation.
+This marker always moves to the bottom of the hold so it is visible, no matter the hold position and orientation.
 
 \begin{figure}[h]
 	\centering
@@ -180,13 +180,13 @@ This marker moves to the bottom of the hold so it is always visible, no matter t
 	\subfloat{{\includegraphics[height=3cm]{images/markers/3.jpg} }}%
 	\hfill
 	\subfloat{{\includegraphics[height=3cm]{images/markers/4.jpg} }}%
-	\caption{Marker positioning based on hold rotation.}%
+	\caption{Marker position on the same hold with different orientations.}%
 	\label{ref:topbotmarkers}
 \end{figure}
 
 \subsection{Capturing images}
 The editor contains functionality for capturing the current image of the wall.
-This can be done anywhere in the editor by either selecting the option from the toolbar, or by pressing \verb|Ctrl+P| (see figure \ref{fig:capture} for examples).
+This can be done anywhere in the editor by either selecting the option from the toolbar, or by pressing \verb|Ctrl+P| (see figure \ref{fig:capture}).
 The image is then saved to the default system "Pictures" folder, unless configured otherwise.
 
 \begin{figure}[h]
@@ -258,7 +258,7 @@ The codebase can be broadly split into the following parts:
 		\item \verb|RouteSettingsMenu| --- controls route settings menu.
 		\item \verb|RouteViewMenu| --- controls route view menu.
 		\item \verb|SettingsMenu| --- controls settings menu.
-		\item \verb|ToolbarMenu| --- controls the top toolbar.
+		\item \verb|ToolbarMenu| --- controls the main toolbar.
 	\end{itemize}
 	\item Import and Export classes:
 	\begin{itemize}
@@ -274,7 +274,7 @@ The codebase can be broadly split into the following parts:
 
 The interactions of the user with the code are done either through one of the controller classes (movement, camera, hold interactions) or through the UI classes (toolbar, hold picker, popups, etc.).
 
-The manager classes encapsulate functionality that need to be managed, such as the holds, routes, lights and highlighted objects.
+The manager classes encapsulate functionality that needs to be managed, such as the holds, routes, lights and highlighted objects.
 They don't depend on any classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a~route is selected).
 
 The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI depend on others. 
@@ -282,5 +282,5 @@ Examples include
 \begin{itemize}
 		\item \verb|BottomBar| displays the previous/current/next selected hold, which are stored in \verb|HoldPickerMenu|,
 		\item \verb|RouteViewMenu| relies on \verb|SettingsMenu|, because it shows it when one of its routes is double clicked and
-		\item \verb|ToolbarMenu| contains buttons to displays various other parts of the UI, such as \verb|SettingsMenu|, \verb|RouteViewMenu| and also \verb|HoldPickerMenu|.
+		\item \verb|ToolbarMenu| contains buttons to display various other parts of the UI, such as \verb|SettingsMenu|, \verb|RouteViewMenu| and also \verb|HoldPickerMenu|.
 \end{itemize}
