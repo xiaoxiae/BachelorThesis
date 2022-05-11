@@ -1,7 +1,7 @@
 % Metadata to be stored in PDF, see documentation of the pdfx package for more details.
 
 \Author{Tomáš Sláma}
-\Title{Climbing route scanner and editor}
-\Keywords{keywords\sep more such\sep yet another}
-\Subject{Abstract of thesis}
+\Title{Climbing route editor}
+\Keywords{photogrammetry\sep routesetting\sep 3D modelling}
+\Subject{With the rising popularity of sport climbing and bouldering, there are increasing incentives to take it to the online space. This thesis does so in way suitable for regular climbing gyms. A workflow for creating 3D hold and wall models and the accompanying editor has been developed, so that routes can be copied from the real world to the virtual one and be interacted with using software in a more immersive way.}
 \Publisher{Charles University}
