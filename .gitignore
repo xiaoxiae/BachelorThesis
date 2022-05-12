@@ -25,6 +25,7 @@ _minted-thesis/
 *.nls
 *.out
 /*.pdf
+!thesis.pdf
 pdfa.xmpi
 *.snm
 .*.swp
