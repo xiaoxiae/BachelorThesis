@@ -13,7 +13,7 @@ The choice was made to use a~game engine because the main functionality of the e
 
 Unity was chosen as the framework to implement the editor in, mainly due to the author's experience with Unity and C\# in general, along with a~large ecosystem of packages that were used to simplify the implementation and allow for rapid prototyping (see section \ref{sec:progdoc}).
 
-The editor code is open-source and cross-platform (Mac, Windows, Linux), with newest releases being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
+The editor code is open-source and cross-platform (Linux, Windows, Mac), with newest releases being freely available at the \href{https://github.com/Climber-Tools/Cled/releases}{project releases page}.
 
 \section{Functionality}
 
@@ -47,9 +47,9 @@ An obvious inspiration is the Vim text editor \cite{vim}, which uses the same co
 The modes are the following:
 
 \begin{itemize}
-	\item \textbf{NORMAL} --- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected.
-	\item \textbf{HOLDING} --- the mode in which the user is holding a~specific hold and can place it, or switch to the previous/next one from the selection.
-	\item \textbf{ROUTE} --- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters.
+	\item \textbf{NORMAL} --- the mode the user is normally in; hovering highlights holds, which can be either picked up or selected
+	\item \textbf{HOLDING} --- the mode in which the user is holding a~specific hold and can place it, or switch to the previous/next one from the selection
+	\item \textbf{ROUTE} --- the mode in which the user is modifying the selected route by adding/removing new holds or modifying the route parameters
 \end{itemize}
 
 \subsection{Hold selection}
@@ -234,40 +234,40 @@ The codebase can be broadly split into the following parts:
 \begin{itemize}
 	\item Controller classes:
 	\begin{itemize}
-		\item \verb|CameraController| --- controls the camera movement.
-		\item \verb|MovementController| --- controls the player movement
-		\item \verb|EditorController| --- controls interaction with holds.
-		\item \verb|UIKeyboardController| --- controls UI using the keyboard.
+		\item \verb|CameraController| --- controls the camera movement
+		\item \verb|MovementController| --- controls the player movemen
+		\item \verb|EditorController| --- controls interaction with holds
+		\item \verb|UIKeyboardController| --- controls UI using the keyboard
 	\end{itemize}
 	\item Manager classes:
 	\begin{itemize}
-		\item \verb|EditorModeManager| --- manages the current editor mode.
-		\item \verb|HighlightManager| --- manages hold highlighting.
-		\item \verb|HoldStateManager| --- manages the state of the holds.
-		\item \verb|LightManager| --- manages the wall lights.
-		\item \verb|RouteManager| --- manages routes.
-		\item \verb|Preferences| --- manages preferences.
+		\item \verb|EditorModeManager| --- manages the current editor mode
+		\item \verb|HighlightManager| --- manages hold highlighting
+		\item \verb|HoldStateManager| --- manages the state of the holds
+		\item \verb|LightManager| --- manages the wall lights
+		\item \verb|RouteManager| --- manages routes
+		\item \verb|Preferences| --- manages preferences
 	\end{itemize}
 	\item User Interface classes:
 	\begin{itemize}
-		\item \verb|BottomBar| --- controls bottom bar.
-		\item \verb|HoldPickerMenu| --- controls hold picker menu.
-		\item \verb|LoadingScreenMenu| --- controls loading screen.
-		\item \verb|PauseMenu| --- controls the pausing.
-		\item \verb|PopupMenu| --- controls the popups.
-		\item \verb|RouteSettingsMenu| --- controls route settings menu.
-		\item \verb|RouteViewMenu| --- controls route view menu.
-		\item \verb|SettingsMenu| --- controls settings menu.
-		\item \verb|ToolbarMenu| --- controls the main toolbar.
+		\item \verb|BottomBar| --- controls bottom bar
+		\item \verb|HoldPickerMenu| --- controls hold picker menu
+		\item \verb|LoadingScreenMenu| --- controls loading screen
+		\item \verb|PauseMenu| --- controls the pausing
+		\item \verb|PopupMenu| --- controls the popups
+		\item \verb|RouteSettingsMenu| --- controls route settings menu
+		\item \verb|RouteViewMenu| --- controls route view menu
+		\item \verb|SettingsMenu| --- controls settings menu
+		\item \verb|ToolbarMenu| --- controls the main toolbar
 	\end{itemize}
 	\item Import and Export classes:
 	\begin{itemize}
-		\item \verb|Importer| --- facilitates importing state.
-		\item \verb|Exporter| --- facilitates exporting state.
-		\item \verb|HoldLoader| --- loads the holds.
-		\item \verb|WallLoader| --- loads the wall.
+		\item \verb|Importer| --- facilitates importing state
+		\item \verb|Exporter| --- facilitates exporting state
+		\item \verb|HoldLoader| --- loads the holds
+		\item \verb|WallLoader| --- loads the wall
 	\end{itemize}
-	\item \verb|Utilities| --- random utility functions and classes.
+	\item \verb|Utilities| --- random utility functions and classes
 \end{itemize}
 
 \subsection{Class interactions}
@@ -275,12 +275,12 @@ The codebase can be broadly split into the following parts:
 The interactions of the user with the code are done either through one of the controller classes (movement, camera, hold interactions) or through the UI classes (toolbar, hold picker, popups, etc.).
 
 The manager classes encapsulate functionality that needs to be managed, such as the holds, routes, lights and highlighted objects.
-They don't depend on any classes (only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a~route is selected).
+They don't depend on any classes (the only exception being \verb|HighlightManager|, which relies on an instance of \verb|HoldStateManager| for making all holds transparent when a~route is selected).
 
 The UI classes themselves have more complex dependencies due to the fact that certain parts of the UI depend on others. 
 Examples include
 \begin{itemize}
 		\item \verb|BottomBar| displays the previous/current/next selected hold, which are stored in \verb|HoldPickerMenu|,
-		\item \verb|RouteViewMenu| relies on \verb|SettingsMenu|, because it shows it when one of its routes is double clicked and
+		\item \verb|RouteViewMenu| relies on \verb|SettingsMenu|, which it displays when one of its routes is double clicked and
 		\item \verb|ToolbarMenu| contains buttons to display various other parts of the UI, such as \verb|SettingsMenu|, \verb|RouteViewMenu| and also \verb|HoldPickerMenu|.
 \end{itemize}
