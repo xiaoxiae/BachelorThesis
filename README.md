@@ -36,11 +36,6 @@ The process and techniques behind the creation of the hold and wall models are d
 The functionality and implementation of the editor are covered in section 2.
 Appendices A and B provide a quickstart for the scanning and editing, respectively.
 
-## Building
-1. Type `make`.
-2. Press `enter`.
-3. Profit?
-
 ## License
 Parts of the code (esp. the title page) are based on the original template (available from the faculty website) by Martin Mareš, Arnošt Komárek, and Michal Kulich.
 
