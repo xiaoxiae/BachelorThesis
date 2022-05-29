@@ -1,4 +1,4 @@
-# Thesis
+# Thesis [[PDF](https://github.com/Climber-Tools/Thesis/raw/master/thesis.pdf)]
 
 - [Clis](https://github.com/Climber-Tools/Clis) – efficient 3D scanning of climbing holds and climbing gym interiors.
 - [Cled](https://github.com/Climber-Tools/Cled) – a 3D editor designed for efficient virtual routesetting.
