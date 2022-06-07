@@ -14,6 +14,12 @@
 
 \usepackage{fontawesome5}
 
+\hypersetup{
+  colorlinks,
+  allcolors=.,
+  urlcolor=blue,
+}
+
 % use the focus theme (without fira)
 \usetheme[nofirafonts]{focus}
 \usefonttheme{serif}
@@ -82,9 +88,9 @@
 
 	\begin{frame}{Motivace}
 		\begin{itemize}
-			\item archivování cest pro sledování trendů (obtížnost, styl) a jednodušší stavění (semi)finálních boulderů při soutěžích
-			\item možnost prohlédnout bouldery před návštěvou stěny
-			\item přidání sociálního aspektu -- komentování, rady ke způsobu výlezu, výlezová videa a fotografie, uživatelská hodnocení
+			\item archivování cest pro sledování trendů (obtížnost, styl) a jednodušší stavění (semi)finálních boulderů na soutěžích
+			\item možnost prohlédnutí boulderů před návštěvou stěny
+			\item přidání sociálního aspektu -- komentáře, videa a rady ke způsobu výlezu, uživatelská hodnocení, uživatelské bouldery
 		\end{itemize}
 
 		\begin{minipage}[t]{0.5\textwidth}
@@ -162,10 +168,10 @@
 	\begin{frame}{Přehled}
 		\begin{itemize}
 			\item rozlišení módů (Normal/Holding/Route)
-			\item lidsky-čitelný import/export formát (\texttt{yaml})
+			\item čitelný a parsovatelný import/export formát (\texttt{yaml})
 			\item vestavěné focení stěny z aktuální pozice kamery
 			\vspace{0.7em}
-			\item implementace v Unity 3D \(\rightarrow\) dostupnost na Windows a Linux
+			\item implementace v Unity \(\rightarrow\) dostupnost na Windowsu a Linuxu
 			\item GPL-3.0 licence (copyleft), sémantické verzování
 		\end{itemize}
 
@@ -185,8 +191,19 @@
 			\item \raisebox{-0.07em}{\includesvg[height=0.8 \baselineskip]{images/clive.svg}}, the \textbf{cli}mber's \textbf{v}i\textbf{e}wer -- webový interface
 			\item rozpoznávání modelů chytů z fotky a automatické umisťování
 			\item laserové skenovaní pro kvalitnější modely
-			\item použití VR k pohodlnějšímu stavění cest
+			\item použití VR k interaktivnějšímu stavění cest
+			\item zlepšení veřejné dostupnosti: \href{https://climber.tools/}{https://climber.tools/}
 		\end{itemize}
+
+		\vspace{0.3em}
+
+		\begin{center}
+			{\Large \(\downarrow\)}
+
+			\vspace{1em}
+
+			\textit{Systém, do kterého se mohou zapojit stěny po celém světě.}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}[focus]
