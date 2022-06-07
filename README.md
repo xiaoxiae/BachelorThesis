@@ -36,6 +36,9 @@ The process and techniques behind the creation of the hold and wall models are d
 The functionality and implementation of the editor are covered in section 2.
 Appendices A and B provide a quickstart for the scanning and editing, respectively.
 
+## Presentation [[PDF](https://github.com/Climber-Tools/Thesis/raw/master/presentation/presentation.pdf)]
+The presentation for the thesis defense (in Czech) can be found in `presentation/`.
+
 ## License
 Parts of the code (esp. the title page) are based on the original template (available from the faculty website) by Martin Mareš, Arnošt Komárek, and Michal Kulich.
 
