@@ -88,17 +88,17 @@
 
 	\begin{frame}{Motivace}
 		\begin{itemize}
-			\item archivování cest pro sledování trendů (obtížnost, styl) a jednodušší stavění (semi)finálních boulderů na soutěžích
 			\item možnost prohlédnutí boulderů před návštěvou stěny
 			\item přidání sociálního aspektu -- komentáře, videa a rady ke způsobu výlezu, uživatelská hodnocení, uživatelské bouldery
+			\item archivování cest pro sledování trendů (obtížnost, styl) a jednodušší stavění (semi)finálních boulderů na soutěžích
 		\end{itemize}
 
 		\begin{minipage}[t]{0.5\textwidth}
-			\fitimage{images/capture-1.jpg}
+			\fitimage{images/capture-1}
 		\end{minipage}%
 		\hfill
 		\begin{minipage}[t]{0.5\textwidth}
-			\fitimage{images/capture-2.jpg}
+			\fitimage{images/capture-2}
 		\end{minipage}
 	\end{frame}
 
@@ -126,7 +126,7 @@
 
 	\begin{frame}{Přehled}
 		\begin{itemize}
-			\item generování modelů pomocí fotogrametrie (obrázy $\rightarrow$ model)
+			\item generování modelů pomocí fotogrametrie (Agisoft Metashape)
 			\item použití otáčecího stolu k automatickému otáčení a focení chytů
 		\end{itemize}
 
@@ -163,16 +163,32 @@
 		\end{minipage}
 	\end{frame}
 
+	\begin{frame}{Model stěny}
+		\begin{enumerate}
+			\item vyfocení stěny z různých úhlů (188 fotografií)
+			\item vygenerování modelu přes Metashape
+			\item manuální úprava v Blenderu (odstranění chyb)
+		\end{enumerate}
+
+		\vspace{0.7em}
+
+		\begin{figure}
+			\centering
+			\includegraphics[height=3.0cm]{images/wall.jpg}
+			\caption*{3D model Smíchoffského boulderu}
+		\end{figure}
+	\end{frame}
+
 	\section{Editor}
 
 	\begin{frame}{Přehled}
 		\begin{itemize}
-			\item rozlišení módů (Normal/Holding/Route)
-			\item čitelný a parsovatelný import/export formát (\texttt{yaml})
-			\item vestavěné focení stěny z aktuální pozice kamery
-			\vspace{0.7em}
-			\item implementace v Unity \(\rightarrow\) dostupnost na Windowsu a Linuxu
+			\item implementace v Unity \(\rightarrow\) dostupnost na Windows a Linux
 			\item GPL-3.0 licence (copyleft), sémantické verzování
+			\vspace{0.7em}
+			\item rozlišení módů (Normal/Holding/Route)
+			\item vestavěné focení stěny z aktuální pozice kamery
+			\item čitelný a parsovatelný import/export formát (\texttt{yaml})
 		\end{itemize}
 
 		\begin{minipage}[t]{0.5\textwidth}
@@ -184,6 +200,14 @@
 		\end{minipage}
 	\end{frame}
 
+	\begin{frame}{Fotografie}
+		\fitimage{images/capture-1}
+	\end{frame}
+
+	\begin{frame}{Fotografie}
+		\fitimage{images/capture-2}
+	\end{frame}
+
 	\section{Budoucí vývoj}
 
 	\begin{frame}{Budoucí vývoj}
@@ -192,16 +216,12 @@
 			\item rozpoznávání modelů chytů z fotky a automatické umisťování
 			\item laserové skenovaní pro kvalitnější modely
 			\item použití VR k interaktivnějšímu stavění cest
+			\item dataset pro strojové učení -- simulace lezce, st(AI)věč cest
 			\item zlepšení veřejné dostupnosti: \href{https://climber.tools/}{https://climber.tools/}
 		\end{itemize}
 
-		\vspace{0.3em}
-
 		\begin{center}
-			{\Large \(\downarrow\)}
-
 			\vspace{1em}
-
 			\textit{Systém, do kterého se mohou zapojit stěny po celém světě.}
 		\end{center}
 	\end{frame}
@@ -211,6 +231,14 @@
 		\vspace{0.5em}
 
 		\normalsize\normalfont a zejména Martinu Marešovi, Martinu Mirbauerovi, Kateřině Sulkové a Benjaminu Schillerovi za pomoc při tvorbě práce.
+
+		\vspace{1em}
+
+		\begin{figure}
+			\centering
+			\includesvg[width=0.92\linewidth]{images/climbing}
+			\caption*{\href{https://xkcd.com/655/}{\color{white}{https://xkcd.com/655/}}}
+		\end{figure}
 	\end{frame}
 
 \end{document}
