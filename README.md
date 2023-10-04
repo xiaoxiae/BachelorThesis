@@ -1,7 +1,7 @@
-# Thesis [[PDF](https://github.com/Climber-Tools/Thesis/raw/master/thesis.pdf)]
+# Thesis [[PDF](https://github.com/xiaoxiae/Thesis/raw/master/thesis.pdf)]
 
-- [Clis](https://github.com/Climber-Tools/Clis) – efficient 3D scanning of climbing holds and climbing gym interiors.
-- [Cled](https://github.com/Climber-Tools/Cled) – a 3D editor designed for efficient virtual routesetting.
+- [Clis](https://github.com/xiaoxiae/Clis) – efficient 3D scanning of climbing holds and climbing gym interiors.
+- [Cled](https://github.com/xiaoxiae/Cled) – a 3D editor designed for efficient virtual routesetting.
 
 ## Abstract
 With the rising popularity of sport climbing and bouldering, there are increasing incentives to take it to the online space.
@@ -29,14 +29,14 @@ The repeated scanning of the holds and the wall adds redundancy, which could be 
 This adds time initially, since models of the wall and the holds have to be created.
 However, it saves time after repeated settings and offers the aforementioned advantages, making it a viable option for commercial climbing gyms.
 
-A system for semi-automatic scanning of climbing holds has been developed to efficiently create hold models, along with a workflow for modelling climbing wall interiors ([Clis – the climber's scanner](https://github.com/Climber-Tools/Clis)).
-The generated data is then used in a virtual editor that can be used to efficiently model the routes ([Cled – the climber's editor](https://github.com/Climber-Tools/Cled)).
+A system for semi-automatic scanning of climbing holds has been developed to efficiently create hold models, along with a workflow for modelling climbing wall interiors ([Clis – the climber's scanner](https://github.com/xiaoxiae/Clis)).
+The generated data is then used in a virtual editor that can be used to efficiently model the routes ([Cled – the climber's editor](https://github.com/xiaoxiae/Cled)).
 
 The process and techniques behind the creation of the hold and wall models are described in section 1.
 The functionality and implementation of the editor are covered in section 2.
 Appendices A and B provide a quickstart for the scanning and editing, respectively.
 
-## Presentation [[PDF](https://github.com/Climber-Tools/Thesis/raw/master/presentation/presentation.pdf)]
+## Presentation [[PDF](https://github.com/xiaoxiae/Thesis/raw/master/presentation/presentation.pdf)]
 The presentation for the thesis defense (in Czech) can be found in `presentation/`.
 
 ## License
